@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -82,6 +83,14 @@ public class AddEditActividadActivity extends AppCompatActivity {
         // Date & Time Picker listeners
         View.OnClickListener listenerFecha = v -> mostrarDatePicker();
         etFecha.setOnClickListener(listenerFecha);
+        etFecha.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
+                mostrarDatePicker();
+                return true;
+            }
+            return false;
+        });
         if (tilFecha != null) {
             tilFecha.setOnClickListener(listenerFecha);
             tilFecha.setEndIconOnClickListener(listenerFecha);
@@ -89,6 +98,14 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
         View.OnClickListener listenerHora = v -> mostrarTimePicker();
         etHora.setOnClickListener(listenerHora);
+        etHora.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
+                mostrarTimePicker();
+                return true;
+            }
+            return false;
+        });
         if (tilHora != null) {
             tilHora.setOnClickListener(listenerHora);
             tilHora.setEndIconOnClickListener(listenerHora);

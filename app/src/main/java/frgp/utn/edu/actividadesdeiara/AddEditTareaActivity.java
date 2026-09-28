@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ public class AddEditTareaActivity extends AppCompatActivity {
     private TextView tvFormTitle;
     private TextInputEditText etNombre, etDescripcion, etFecha, etHorario;
     private TextInputLayout tilFechaTarea, tilHorarioTarea;
-    private MaterialButton btnGuardar;
+    private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
     private String currentUserId;
@@ -56,17 +57,36 @@ public class AddEditTareaActivity extends AppCompatActivity {
         tilFechaTarea = findViewById(R.id.tilFechaTarea);
         tilHorarioTarea = findViewById(R.id.tilHorarioTarea);
         btnGuardar = findViewById(R.id.btnGuardarTarea);
+        btnEliminar = findViewById(R.id.btnEliminarTarea);
 
         // Click listeners for Date & Time Pickers
         View.OnClickListener listenerFecha = v -> mostrarDatePicker();
         etFecha.setOnClickListener(listenerFecha);
+        etFecha.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
+                mostrarDatePicker();
+                return true;
+            }
+            return false;
+        });
         if (tilFechaTarea != null) {
+            tilFechaTarea.setOnClickListener(listenerFecha);
             tilFechaTarea.setEndIconOnClickListener(listenerFecha);
         }
 
         View.OnClickListener listenerHora = v -> mostrarTimePicker();
         etHorario.setOnClickListener(listenerHora);
+        etHorario.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
+                mostrarTimePicker();
+                return true;
+            }
+            return false;
+        });
         if (tilHorarioTarea != null) {
+            tilHorarioTarea.setOnClickListener(listenerHora);
             tilHorarioTarea.setEndIconOnClickListener(listenerHora);
         }
 
@@ -80,11 +100,20 @@ public class AddEditTareaActivity extends AppCompatActivity {
             etDescripcion.setText(tareaAEditar.getDescripcion());
             etFecha.setText(tareaAEditar.getFecha());
             etHorario.setText(tareaAEditar.getHorario());
+            if (btnEliminar != null) {
+                btnEliminar.setVisibility(View.VISIBLE);
+            }
         } else {
             tvFormTitle.setText("Nueva Tarea");
+            if (btnEliminar != null) {
+                btnEliminar.setVisibility(View.GONE);
+            }
         }
 
         btnGuardar.setOnClickListener(v -> guardarTarea());
+        if (btnEliminar != null) {
+            btnEliminar.setOnClickListener(v -> confirmarEliminar());
+        }
     }
 
     private void mostrarDatePicker() {
@@ -112,6 +141,28 @@ public class AddEditTareaActivity extends AppCompatActivity {
         }, hour, minute, true);
 
         dialog.show();
+    }
+
+    private void confirmarEliminar() {
+        if (tareaAEditar == null || tareaAEditar.getId() == null) return;
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Eliminar Tarea")
+                .setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    db.collection("users")
+                            .document(currentUserId)
+                            .collection("tareas")
+                            .document(tareaAEditar.getId())
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     private void guardarTarea() {

@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -60,8 +61,23 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
             holder.tvDescripcion.setVisibility(View.GONE);
         }
 
-        holder.tvFecha.setText(tarea.getFecha() != null ? tarea.getFecha() : "");
-        holder.tvHorario.setText(tarea.getHorario() != null ? tarea.getHorario() : "");
+        if (tarea.getFecha() != null && !tarea.getFecha().trim().isEmpty()) {
+            holder.tvFecha.setText(tarea.getFecha());
+            holder.tvFecha.setVisibility(View.VISIBLE);
+            if (holder.ivFecha != null) holder.ivFecha.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvFecha.setVisibility(View.GONE);
+            if (holder.ivFecha != null) holder.ivFecha.setVisibility(View.GONE);
+        }
+
+        if (tarea.getHorario() != null && !tarea.getHorario().trim().isEmpty()) {
+            holder.tvHorario.setText(tarea.getHorario());
+            holder.tvHorario.setVisibility(View.VISIBLE);
+            if (holder.ivHorario != null) holder.ivHorario.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvHorario.setVisibility(View.GONE);
+            if (holder.ivHorario != null) holder.ivHorario.setVisibility(View.GONE);
+        }
 
         holder.cbCompletada.setOnCheckedChangeListener(null);
         holder.cbCompletada.setChecked(tarea.isCompletada());
@@ -105,6 +121,8 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
         TextView tvDescripcion;
         TextView tvFecha;
         TextView tvHorario;
+        ImageView ivFecha;
+        ImageView ivHorario;
         CheckBox cbCompletada;
 
         public TareaViewHolder(@NonNull View itemView) {
@@ -113,6 +131,8 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
             tvDescripcion = itemView.findViewById(R.id.tvDescripcionTarea);
             tvFecha = itemView.findViewById(R.id.tvFechaTarea);
             tvHorario = itemView.findViewById(R.id.tvHorarioTarea);
+            ivFecha = itemView.findViewById(R.id.ivFechaTarea);
+            ivHorario = itemView.findViewById(R.id.ivHorarioTarea);
             cbCompletada = itemView.findViewById(R.id.cbCompletadaTarea);
         }
     }
