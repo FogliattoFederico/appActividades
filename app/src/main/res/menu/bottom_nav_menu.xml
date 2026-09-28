@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_calendario"
+        android:icon="@drawable/ic_calendar"
+        android:title="Calendario" />
+
+    <item
+        android:id="@+id/nav_profesionales"
+        android:icon="@drawable/ic_professionals"
+        android:title="Profesionales" />
+
+    <item
+        android:id="@+id/nav_rubros"
+        android:icon="@drawable/ic_rubro"
+        android:title="Rubros" />
+
+    <item
+        android:id="@+id/nav_tareas"
+        android:icon="@drawable/ic_task"
+        android:title="Tareas" />
+
+</menu>

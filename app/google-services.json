@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "363296672726",
+    "project_id": "actividades-iara",
+    "storage_bucket": "actividades-iara.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363296672726:android:1f549c19f76c827994f277",
+        "android_client_info": {
+          "package_name": "frgp.utn.edu.actividadesdeiara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABRFDchzwvjxPnYUK6wy6ua4u236h3WaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

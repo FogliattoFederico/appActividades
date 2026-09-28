@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF1C1B1F</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="purple_500">#6750A4</color>
+    <color name="purple_700">#4F378B</color>
+    <color name="purple_200">#D0BCFF</color>
+    <color name="purple_light_bg">#F3EDF7</color>
+    <color name="teal_200">#03DAC5</color>
+
+    <!-- High-contrast category badge colors -->
+    <color name="cat_medico">#B71C1C</color>
+    <color name="cat_medico_bg">#FFEBEE</color>
+
+    <color name="cat_profesional">#0D47A1</color>
+    <color name="cat_profesional_bg">#E3F2FD</color>
+
+    <color name="cat_docente">#4A148C</color>
+    <color name="cat_docente_bg">#F3E5F5</color>
+
+    <color name="cat_fisica">#1B5E20</color>
+    <color name="cat_fisica_bg">#E8F5E9</color>
+
+    <!-- High contrast text & hint & divider colors -->
+    <color name="text_primary">#FF1C1B1F</color>
+    <color name="text_secondary">#FF49454F</color>
+    <color name="text_hint">#FF555555</color>
+    <color name="divider">#FF79747E</color>
+    <color name="box_stroke">#FF6750A4</color>
+</resources>

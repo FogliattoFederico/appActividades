@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/divider"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Apellido y Nombre -->
+        <TextView
+            android:id="@+id/tvNombreApellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:text="Pérez, Juan" />
+
+        <!-- Rubro y Especialidad -->
+        <TextView
+            android:id="@+id/tvRubroEspecialidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/purple_700"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Médico · Traumatología" />
+
+        <!-- Contacto -->
+        <TextView
+            android:id="@+id/tvContacto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            tools:text="📞 011-5555-5555 · ✉️ juan@mail.com" />
+
+        <!-- Atención -->
+        <TextView
+            android:id="@+id/tvAtencion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            tools:text="📍 Av. Siempre Viva 123" />
+
+        <!-- Pago / Obra Social -->
+        <TextView
+            android:id="@+id/tvAtencionPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/cat_fisica"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="🏥 Obra Social (Bonos: 2 | Adicional: $1500)" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
