@@ -10,16 +10,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etBuscarProfesional"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilBuscarProfesional"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:background="@android:drawable/edit_text"
-            android:hint="Buscar profesional por nombre, rubro o especialidad"
-            android:inputType="text"
-            android:padding="10dp"
-            android:autofillHints="" />
+            android:hint="Buscar por nombre, rubro o especialidad"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/purple_500"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBuscarProfesional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
