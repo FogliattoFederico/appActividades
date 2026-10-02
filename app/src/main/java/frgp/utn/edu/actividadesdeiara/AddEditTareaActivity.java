@@ -62,14 +62,6 @@ public class AddEditTareaActivity extends AppCompatActivity {
         // Click listeners for Date & Time Pickers
         View.OnClickListener listenerFecha = v -> mostrarDatePicker();
         etFecha.setOnClickListener(listenerFecha);
-        etFecha.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                v.performClick();
-                mostrarDatePicker();
-                return true;
-            }
-            return false;
-        });
         if (tilFechaTarea != null) {
             tilFechaTarea.setOnClickListener(listenerFecha);
             tilFechaTarea.setEndIconOnClickListener(listenerFecha);
@@ -77,14 +69,6 @@ public class AddEditTareaActivity extends AppCompatActivity {
 
         View.OnClickListener listenerHora = v -> mostrarTimePicker();
         etHorario.setOnClickListener(listenerHora);
-        etHorario.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                v.performClick();
-                mostrarTimePicker();
-                return true;
-            }
-            return false;
-        });
         if (tilHorarioTarea != null) {
             tilHorarioTarea.setOnClickListener(listenerHora);
             tilHorarioTarea.setEndIconOnClickListener(listenerHora);
