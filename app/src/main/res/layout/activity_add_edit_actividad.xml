@@ -71,58 +71,55 @@
                 android:inputType="textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Date & Time Row -->
-        <LinearLayout
+        <!-- Date Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilFecha"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="12dp"
+            android:hint="Fecha"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconTint="@color/purple_500">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilFecha"
-                style="@style/Widget.ActividadesDeIara.TextInputLayout"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFecha"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:hint="Fecha"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_calendar"
-                app:endIconTint="@color/purple_500">
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFecha"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <!-- Time Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilHora"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Hora (ej: 15:30)"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_time"
+            app:endIconTint="@color/purple_500">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilHora"
-                style="@style/Widget.ActividadesDeIara.TextInputLayout"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etHora"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:hint="Hora"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_time"
-                app:endIconTint="@color/purple_500">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etHora"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Description / Notes -->
         <com.google.android.material.textfield.TextInputLayout

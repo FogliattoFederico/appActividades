@@ -10,13 +10,14 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/divider">
+    app:strokeColor="@color/purple_200"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="14dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Nombre de la tarea"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -39,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Completada"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -47,7 +48,7 @@
             android:id="@+id/tvDescripcionTarea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:text="Descripción o notas de la tarea a realizar"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
@@ -57,14 +58,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="10dp">
 
             <ImageView
                 android:id="@+id/ivFechaTarea"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_calendar"
-                app:tint="@color/text_secondary"
+                app:tint="@color/purple_500"
                 android:contentDescription="Fecha" />
 
             <TextView
@@ -73,17 +74,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="20/05/2025"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/ivHorarioTarea"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="14dp"
                 android:src="@drawable/ic_time"
-                app:tint="@color/text_secondary"
+                app:tint="@color/purple_500"
                 android:contentDescription="Horario" />
 
             <TextView
@@ -92,8 +93,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="15:30"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
+                android:textColor="@color/purple_700"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

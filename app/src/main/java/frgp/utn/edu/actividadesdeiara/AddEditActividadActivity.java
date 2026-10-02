@@ -137,6 +137,21 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
     private void mostrarDatePicker() {
         Calendar cal = Calendar.getInstance();
+        String textoFecha = etFecha != null && etFecha.getText() != null ? etFecha.getText().toString().trim() : "";
+        if (textoFecha.contains("/")) {
+            try {
+                String[] partes = textoFecha.split("/");
+                if (partes.length == 3) {
+                    int d = Integer.parseInt(partes[0].trim());
+                    int m = Integer.parseInt(partes[1].trim()) - 1;
+                    int y = Integer.parseInt(partes[2].trim());
+                    cal.set(Calendar.YEAR, y);
+                    cal.set(Calendar.MONTH, m);
+                    cal.set(Calendar.DAY_OF_MONTH, d);
+                }
+            } catch (Exception ignored) {
+            }
+        }
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -153,6 +168,18 @@ public class AddEditActividadActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
+
+        String textoActual = etHora != null && etHora.getText() != null ? etHora.getText().toString().trim() : "";
+        if (textoActual.contains(":")) {
+            try {
+                String[] partes = textoActual.split(":");
+                if (partes.length >= 2) {
+                    hour = Integer.parseInt(partes[0].trim());
+                    minute = Integer.parseInt(partes[1].trim());
+                }
+            } catch (Exception ignored) {
+            }
+        }
 
         TimePickerDialog dialog = new TimePickerDialog(this, (view, h, m) -> {
             String horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d", h, m);

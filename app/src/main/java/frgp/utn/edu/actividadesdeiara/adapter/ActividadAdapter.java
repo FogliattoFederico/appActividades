@@ -64,8 +64,23 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             holder.tvResponsable.setVisibility(View.GONE);
         }
 
-        holder.tvFecha.setText(actividad.getFecha() != null ? actividad.getFecha() : "");
-        holder.tvHora.setText(actividad.getHora() != null ? actividad.getHora() : "");
+        if (actividad.getFecha() != null && !actividad.getFecha().trim().isEmpty()) {
+            holder.tvFecha.setText(actividad.getFecha().trim());
+            holder.tvFecha.setVisibility(View.VISIBLE);
+            if (holder.ivFecha != null) holder.ivFecha.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvFecha.setVisibility(View.GONE);
+            if (holder.ivFecha != null) holder.ivFecha.setVisibility(View.GONE);
+        }
+
+        if (actividad.getHora() != null && !actividad.getHora().trim().isEmpty()) {
+            holder.tvHora.setText(actividad.getHora().trim());
+            holder.tvHora.setVisibility(View.VISIBLE);
+            if (holder.ivHora != null) holder.ivHora.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvHora.setVisibility(View.GONE);
+            if (holder.ivHora != null) holder.ivHora.setVisibility(View.GONE);
+        }
 
         if (actividad.getDescripcion() != null && !actividad.getDescripcion().trim().isEmpty()) {
             holder.tvDescripcion.setText(actividad.getDescripcion());
@@ -146,6 +161,8 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
 
         LinearLayout llCategoryBadge;
         ImageView ivCategoryIcon;
+        ImageView ivFecha;
+        ImageView ivHora;
         TextView tvCategory;
         TextView tvTitulo;
         TextView tvResponsable;
@@ -158,6 +175,8 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             super(itemView);
             llCategoryBadge = itemView.findViewById(R.id.llCategoryBadge);
             ivCategoryIcon = itemView.findViewById(R.id.ivCategoryIcon);
+            ivFecha = itemView.findViewById(R.id.ivFecha);
+            ivHora = itemView.findViewById(R.id.ivHora);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvResponsable = itemView.findViewById(R.id.tvResponsable);
