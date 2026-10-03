@@ -135,6 +135,22 @@
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Sesiones / Clases Semanales (Opcional) -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Cantidad de sesiones / clases semanales (Opcional)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSesionesSemanales"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- Switch Atención Domicilio -->
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchAtencionDomicilio"

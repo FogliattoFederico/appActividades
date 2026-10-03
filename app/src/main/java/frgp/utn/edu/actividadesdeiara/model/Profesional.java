@@ -18,12 +18,13 @@ public class Profesional implements Serializable {
     private String honorarios;
     private String cantidadBonos;
     private String adicional;
+    private String sesionesSemanales;
 
     public Profesional() {
         // Constructor vacío requerido por Firestore
     }
 
-    public Profesional(String nombre, String apellido, String rubro, String especialidad, String telefono, String email, boolean atencionDomicilio, String direccionAtencion, boolean atiendeObraSocial, String honorarios, String cantidadBonos, String adicional) {
+    public Profesional(String nombre, String apellido, String rubro, String especialidad, String telefono, String email, boolean atencionDomicilio, String direccionAtencion, boolean atiendeObraSocial, String honorarios, String cantidadBonos, String adicional, String sesionesSemanales) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.rubro = rubro;
@@ -36,6 +37,11 @@ public class Profesional implements Serializable {
         this.honorarios = honorarios;
         this.cantidadBonos = cantidadBonos;
         this.adicional = adicional;
+        this.sesionesSemanales = sesionesSemanales;
+    }
+
+    public Profesional(String nombre, String apellido, String rubro, String especialidad, String telefono, String email, boolean atencionDomicilio, String direccionAtencion, boolean atiendeObraSocial, String honorarios, String cantidadBonos, String adicional) {
+        this(nombre, apellido, rubro, especialidad, telefono, email, atencionDomicilio, direccionAtencion, atiendeObraSocial, honorarios, cantidadBonos, adicional, "");
     }
 
     @Exclude
@@ -141,5 +147,13 @@ public class Profesional implements Serializable {
 
     public void setAdicional(String adicional) {
         this.adicional = adicional;
+    }
+
+    public String getSesionesSemanales() {
+        return sesionesSemanales;
+    }
+
+    public void setSesionesSemanales(String sesionesSemanales) {
+        this.sesionesSemanales = sesionesSemanales;
     }
 }

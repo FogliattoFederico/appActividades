@@ -111,6 +111,14 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             holder.tvAtencionPago.setVisibility(View.GONE);
         }
 
+        // Sesiones / Clases Semanales
+        if (prof.getSesionesSemanales() != null && !prof.getSesionesSemanales().trim().isEmpty()) {
+            holder.tvSesionesSemanales.setText("🗓️ Sesiones/Clases semanales: " + prof.getSesionesSemanales().trim());
+            holder.tvSesionesSemanales.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvSesionesSemanales.setVisibility(View.GONE);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onProfesionalClick(prof);
@@ -137,6 +145,7 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         TextView tvContacto;
         TextView tvAtencion;
         TextView tvAtencionPago;
+        TextView tvSesionesSemanales;
 
         ProfesionalViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -145,6 +154,7 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             tvContacto = itemView.findViewById(R.id.tvContacto);
             tvAtencion = itemView.findViewById(R.id.tvAtencion);
             tvAtencionPago = itemView.findViewById(R.id.tvAtencionPago);
+            tvSesionesSemanales = itemView.findViewById(R.id.tvSesionesSemanales);
         }
     }
 }

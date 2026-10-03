@@ -71,5 +71,16 @@
             android:textStyle="bold"
             tools:text="🏥 Obra Social (Bonos: 2 | Adicional: $1500)" />
 
+        <!-- Sesiones / Clases Semanales -->
+        <TextView
+            android:id="@+id/tvSesionesSemanales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/purple_700"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="🗓️ 3 sesiones/clases semanales" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

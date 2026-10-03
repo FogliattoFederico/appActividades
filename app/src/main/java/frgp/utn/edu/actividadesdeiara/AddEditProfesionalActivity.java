@@ -37,7 +37,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String currentUserId;
 
-    private TextInputEditText etNombre, etApellido, etTelefono, etEmail;
+    private TextInputEditText etNombre, etApellido, etTelefono, etEmail, etSesionesSemanales;
     private TextInputEditText etDireccionAtencion, etHonorarios, etCantidadBonos, etAdicional;
     private TextInputLayout tilDireccionAtencion, tilHonorarios;
     private SwitchMaterial switchAtencionDomicilio, switchAtiendeObraSocial;
@@ -73,6 +73,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         etApellido = findViewById(R.id.etApellido);
         etTelefono = findViewById(R.id.etTelefono);
         etEmail = findViewById(R.id.etEmail);
+        etSesionesSemanales = findViewById(R.id.etSesionesSemanales);
         etDireccionAtencion = findViewById(R.id.etDireccionAtencion);
         etHonorarios = findViewById(R.id.etHonorarios);
         etCantidadBonos = findViewById(R.id.etCantidadBonos);
@@ -114,6 +115,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
             etApellido.setText(profesionalEnEdicion.getApellido());
             etTelefono.setText(profesionalEnEdicion.getTelefono());
             etEmail.setText(profesionalEnEdicion.getEmail());
+            etSesionesSemanales.setText(profesionalEnEdicion.getSesionesSemanales());
 
             switchAtencionDomicilio.setChecked(profesionalEnEdicion.isAtencionDomicilio());
             tilDireccionAtencion.setVisibility(profesionalEnEdicion.isAtencionDomicilio() ? View.GONE : View.VISIBLE);
@@ -219,6 +221,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         String apellido = etApellido.getText() != null ? etApellido.getText().toString().trim() : "";
         String telefono = etTelefono.getText() != null ? etTelefono.getText().toString().trim() : "";
         String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String sesionesSemanales = etSesionesSemanales.getText() != null ? etSesionesSemanales.getText().toString().trim() : "";
 
         boolean atencionDomicilio = switchAtencionDomicilio.isChecked();
         String direccionAtencion = etDireccionAtencion.getText() != null ? etDireccionAtencion.getText().toString().trim() : "";
@@ -280,7 +283,8 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                 atiendeObraSocial,
                 honorarios,
                 cantidadBonos,
-                adicional
+                adicional,
+                sesionesSemanales
         );
 
         if (profesionalEnEdicion != null && profesionalEnEdicion.getId() != null) {
