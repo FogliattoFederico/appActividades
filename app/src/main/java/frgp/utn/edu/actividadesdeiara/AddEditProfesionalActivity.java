@@ -3,10 +3,9 @@ package frgp.utn.edu.actividadesdeiara;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -42,7 +41,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
     private TextInputLayout tilDireccionAtencion, tilHonorarios;
     private SwitchMaterial switchAtencionDomicilio, switchAtiendeObraSocial;
     private LinearLayout llObraSocialCampos;
-    private Spinner spinnerRubro, spinnerEspecialidad;
+    private AutoCompleteTextView actvRubro, actvEspecialidad;
     private MaterialButton btnGuardar;
 
     private final List<Rubro> listaRubros = new ArrayList<>();
@@ -57,17 +56,18 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_profesional);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootView), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getUid();
 
         MaterialToolbar toolbar = findViewById(R.id.toolbarProfesional);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        if (toolbar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(0, systemBars.top, 0, 0);
+                return insets;
+            });
+            toolbar.setNavigationOnClickListener(v -> finish());
+        }
 
         etNombre = findViewById(R.id.etNombre);
         etApellido = findViewById(R.id.etApellido);
@@ -86,17 +86,31 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         switchAtiendeObraSocial = findViewById(R.id.switchAtiendeObraSocial);
         llObraSocialCampos = findViewById(R.id.llObraSocialCampos);
 
-        spinnerRubro = findViewById(R.id.spinnerRubro);
-        spinnerEspecialidad = findViewById(R.id.spinnerEspecialidad);
+        actvRubro = findViewById(R.id.actvRubro);
+        actvEspecialidad = findViewById(R.id.actvEspecialidad);
+        TextInputLayout tilRubro = findViewById(R.id.tilRubro);
+        TextInputLayout tilEspecialidad = findViewById(R.id.tilEspecialidad);
         btnGuardar = findViewById(R.id.btnGuardarProfesional);
 
-        adapterRubros = new ArrayAdapter<>(this, R.layout.item_spinner, new ArrayList<>());
-        adapterRubros.setDropDownViewResource(R.layout.item_spinner_dropdown);
-        spinnerRubro.setAdapter(adapterRubros);
+        adapterRubros = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, new ArrayList<>());
+        actvRubro.setAdapter(adapterRubros);
 
-        adapterEspecialidades = new ArrayAdapter<>(this, R.layout.item_spinner, new ArrayList<>());
-        adapterEspecialidades.setDropDownViewResource(R.layout.item_spinner_dropdown);
-        spinnerEspecialidad.setAdapter(adapterEspecialidades);
+        adapterEspecialidades = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, new ArrayList<>());
+        actvEspecialidad.setAdapter(adapterEspecialidades);
+
+        View.OnClickListener listenerRubro = v -> actvRubro.showDropDown();
+        actvRubro.setOnClickListener(listenerRubro);
+        if (tilRubro != null) {
+            tilRubro.setOnClickListener(listenerRubro);
+            tilRubro.setEndIconOnClickListener(listenerRubro);
+        }
+
+        View.OnClickListener listenerEspecialidad = v -> actvEspecialidad.showDropDown();
+        actvEspecialidad.setOnClickListener(listenerEspecialidad);
+        if (tilEspecialidad != null) {
+            tilEspecialidad.setOnClickListener(listenerEspecialidad);
+            tilEspecialidad.setEndIconOnClickListener(listenerEspecialidad);
+        }
 
         // Dynamic visibility logic on switches
         switchAtencionDomicilio.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -110,7 +124,7 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
 
         profesionalEnEdicion = (Profesional) getIntent().getSerializableExtra(EXTRA_PROFESIONAL);
         if (profesionalEnEdicion != null) {
-            toolbar.setTitle("Editar profesional");
+            if (toolbar != null) toolbar.setTitle("Editar profesional");
             etNombre.setText(profesionalEnEdicion.getNombre());
             etApellido.setText(profesionalEnEdicion.getApellido());
             etTelefono.setText(profesionalEnEdicion.getTelefono());
@@ -131,19 +145,14 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
 
             especialidadPendienteAlEditar = profesionalEnEdicion.getEspecialidad();
         } else {
-            toolbar.setTitle("Nuevo profesional");
+            if (toolbar != null) toolbar.setTitle("Nuevo profesional");
         }
 
-        spinnerRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < listaRubros.size()) {
-                    cargarEspecialidadesDeRubro(listaRubros.get(position).getId());
-                }
+        actvRubro.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < listaRubros.size()) {
+                cargarEspecialidadesDeRubro(listaRubros.get(position).getId());
+                actvEspecialidad.setText("", false);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         cargarRubros();
@@ -152,6 +161,8 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
     }
 
     private void cargarRubros() {
+        if (currentUserId == null) return;
+
         db.collection("users")
                 .document(currentUserId)
                 .collection("rubros")
@@ -167,14 +178,14 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                         nombres.add(rubro.getNombre());
                     }
 
-                    adapterRubros.clear();
-                    adapterRubros.addAll(nombres);
-                    adapterRubros.notifyDataSetChanged();
+                    adapterRubros = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, nombres);
+                    actvRubro.setAdapter(adapterRubros);
 
-                    if (profesionalEnEdicion != null) {
-                        for (int i = 0; i < listaRubros.size(); i++) {
-                            if (listaRubros.get(i).getNombre().equals(profesionalEnEdicion.getRubro())) {
-                                spinnerRubro.setSelection(i);
+                    if (profesionalEnEdicion != null && profesionalEnEdicion.getRubro() != null) {
+                        actvRubro.setText(profesionalEnEdicion.getRubro(), false);
+                        for (Rubro r : listaRubros) {
+                            if (r.getNombre().equals(profesionalEnEdicion.getRubro())) {
+                                cargarEspecialidadesDeRubro(r.getId());
                                 break;
                             }
                         }
@@ -188,6 +199,8 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
     }
 
     private void cargarEspecialidadesDeRubro(String rubroId) {
+        if (currentUserId == null) return;
+
         db.collection("users")
                 .document(currentUserId)
                 .collection("rubros")
@@ -201,15 +214,11 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                         if (nombre != null) nombres.add(nombre);
                     }
 
-                    adapterEspecialidades.clear();
-                    adapterEspecialidades.addAll(nombres);
-                    adapterEspecialidades.notifyDataSetChanged();
+                    adapterEspecialidades = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, nombres);
+                    actvEspecialidad.setAdapter(adapterEspecialidades);
 
                     if (especialidadPendienteAlEditar != null) {
-                        int indice = nombres.indexOf(especialidadPendienteAlEditar);
-                        if (indice >= 0) {
-                            spinnerEspecialidad.setSelection(indice);
-                        }
+                        actvEspecialidad.setText(especialidadPendienteAlEditar, false);
                         especialidadPendienteAlEditar = null;
                     }
                 })
@@ -231,8 +240,8 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         String cantidadBonos = etCantidadBonos.getText() != null ? etCantidadBonos.getText().toString().trim() : "";
         String adicional = etAdicional.getText() != null ? etAdicional.getText().toString().trim() : "";
 
-        String rubro = spinnerRubro.getSelectedItem() != null ? spinnerRubro.getSelectedItem().toString() : "";
-        String especialidad = spinnerEspecialidad.getSelectedItem() != null ? spinnerEspecialidad.getSelectedItem().toString() : "";
+        String rubro = actvRubro.getText() != null ? actvRubro.getText().toString().trim() : "";
+        String especialidad = actvEspecialidad.getText() != null ? actvEspecialidad.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(apellido)) {
             etApellido.setError("Ingrese el apellido");

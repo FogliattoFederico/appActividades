@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="#F8F9FA">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:background="@color/purple_500"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -71,37 +71,47 @@
                     android:inputType="textPersonName|textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Rubro -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Rubro *"
-                android:textColor="@color/purple_700"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spinnerRubro"
+            <!-- Rubro Dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilRubro"
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="12dp"
+                android:hint="Rubro *"
+                app:endIconMode="dropdown_menu">
 
-            <!-- Especialidad -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Especialidad *"
-                android:textColor="@color/purple_700"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                <AutoCompleteTextView
+                    android:id="@+id/actvRubro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
-                android:id="@+id/spinnerEspecialidad"
+            <!-- Especialidad Dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEspecialidad"
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="12dp"
+                android:hint="Especialidad *"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvEspecialidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Teléfono -->
             <com.google.android.material.textfield.TextInputLayout
