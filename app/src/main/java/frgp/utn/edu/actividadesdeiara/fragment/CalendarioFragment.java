@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -219,6 +221,28 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
         return null;
     }
 
+    private int compararHoras(String h1, String h2) {
+        if (h1 == null) h1 = "";
+        if (h2 == null) h2 = "";
+
+        h1 = h1.trim();
+        h2 = h2.trim();
+
+        if (h1.isEmpty() && h2.isEmpty()) return 0;
+        if (h1.isEmpty()) return 1;
+        if (h2.isEmpty()) return -1;
+
+        try {
+            String[] p1 = h1.split(":");
+            String[] p2 = h2.split(":");
+            int min1 = Integer.parseInt(p1[0].trim()) * 60 + (p1.length > 1 ? Integer.parseInt(p1[1].trim()) : 0);
+            int min2 = Integer.parseInt(p2[0].trim()) * 60 + (p2.length > 1 ? Integer.parseInt(p2[1].trim()) : 0);
+            return Integer.compare(min1, min2);
+        } catch (Exception e) {
+            return h1.compareTo(h2);
+        }
+    }
+
     private void filtrarListaPorDia() {
         List<Actividad> listaFiltrada = new ArrayList<>();
 
@@ -232,6 +256,8 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
                 }
             }
         }
+
+        Collections.sort(listaFiltrada, (a1, a2) -> compararHoras(a1.getHora(), a2.getHora()));
 
         adapter.setListaActividades(listaFiltrada);
 
@@ -249,6 +275,34 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
         Intent intent = new Intent(requireContext(), AddEditActividadActivity.class);
         intent.putExtra(AddEditActividadActivity.EXTRA_ACTIVIDAD, actividad);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActividadLongClick(Actividad actividad) {
+        if (actividad == null || actividad.getId() == null) return;
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar Actividad")
+                .setMessage("¿Deseas eliminar la actividad '" + actividad.getTitulo() + "'?")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    db.collection("users")
+                            .document(currentUserId)
+                            .collection("actividades")
+                            .document(actividad.getId())
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                if (isAdded()) {
+                                    Toast.makeText(requireContext(), "Actividad eliminada", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                if (isAdded()) {
+                                    Toast.makeText(requireContext(), "Error al eliminar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     @Override

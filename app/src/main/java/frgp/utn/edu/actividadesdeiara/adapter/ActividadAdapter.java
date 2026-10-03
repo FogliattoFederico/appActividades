@@ -26,6 +26,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
 
     public interface OnActividadClickListener {
         void onActividadClick(Actividad actividad);
+        void onActividadLongClick(Actividad actividad);
         void onCompletadaToggle(Actividad actividad, boolean isChecked);
     }
 
@@ -149,6 +150,13 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             if (listener != null) {
                 listener.onActividadClick(actividad);
             }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onActividadLongClick(actividad);
+            }
+            return true;
         });
     }
 

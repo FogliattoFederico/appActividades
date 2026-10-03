@@ -22,32 +22,32 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.model.Actividad;
+import frgp.utn.edu.actividadesdeiara.model.Profesional;
 
 public class AddEditActividadActivity extends AppCompatActivity {
 
     public static final String EXTRA_ACTIVIDAD = "extra_actividad";
 
     private TextView tvFormTitle;
-    private TextInputEditText etTitulo, etResponsable, etFecha, etHora, etDescripcion;
-    private TextInputLayout tilFecha, tilHora;
-    private AutoCompleteTextView actvCategoria;
+    private TextInputEditText etTitulo, etRubro, etEspecialidad, etFecha, etHora, etDescripcion;
+    private TextInputLayout tilProfesional, tilFecha, tilHora;
+    private AutoCompleteTextView actvProfesional;
     private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
     private String currentUserId;
     private Actividad actividadAEditar;
 
-    private static final String[] CATEGORIAS = new String[]{
-            "Médico",
-            "Profesional",
-            "Docente",
-            "Actividad Física"
-    };
+    private final List<Profesional> listaProfesionales = new ArrayList<>();
+    private ArrayAdapter<String> adapterProfesionales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +73,10 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
         tvFormTitle = findViewById(R.id.tvFormTitle);
         etTitulo = findViewById(R.id.etTitulo);
-        actvCategoria = findViewById(R.id.actvCategoria);
-        etResponsable = findViewById(R.id.etResponsable);
+        actvProfesional = findViewById(R.id.actvProfesional);
+        tilProfesional = findViewById(R.id.tilProfesional);
+        etRubro = findViewById(R.id.etRubro);
+        etEspecialidad = findViewById(R.id.etEspecialidad);
         etFecha = findViewById(R.id.etFecha);
         etHora = findViewById(R.id.etHora);
         tilFecha = findViewById(R.id.tilFecha);
@@ -83,13 +85,23 @@ public class AddEditActividadActivity extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btnGuardar);
         btnEliminar = findViewById(R.id.btnEliminar);
 
-        // Setup Dropdown Adapter
-        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(
-                this,
-                R.layout.item_spinner_dropdown,
-                CATEGORIAS
-        );
-        actvCategoria.setAdapter(adapterCategory);
+        adapterProfesionales = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, new ArrayList<>());
+        actvProfesional.setAdapter(adapterProfesionales);
+
+        View.OnClickListener listenerProfesional = v -> actvProfesional.showDropDown();
+        actvProfesional.setOnClickListener(listenerProfesional);
+        if (tilProfesional != null) {
+            tilProfesional.setOnClickListener(listenerProfesional);
+            tilProfesional.setEndIconOnClickListener(listenerProfesional);
+        }
+
+        actvProfesional.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < listaProfesionales.size()) {
+                Profesional p = listaProfesionales.get(position);
+                etRubro.setText(p.getRubro() != null ? p.getRubro() : "");
+                etEspecialidad.setText(p.getEspecialidad() != null ? p.getEspecialidad() : "");
+            }
+        });
 
         // Date & Time Picker listeners
         View.OnClickListener listenerFecha = v -> mostrarDatePicker();
@@ -114,20 +126,54 @@ public class AddEditActividadActivity extends AppCompatActivity {
         if (actividadAEditar != null) {
             tvFormTitle.setText("Editar Actividad");
             etTitulo.setText(actividadAEditar.getTitulo());
-            actvCategoria.setText(actividadAEditar.getCategoria(), false);
-            etResponsable.setText(actividadAEditar.getResponsable());
+            actvProfesional.setText(actividadAEditar.getResponsable() != null ? actividadAEditar.getResponsable() : "", false);
+            etRubro.setText(actividadAEditar.getRubro() != null ? actividadAEditar.getRubro() : "");
+            etEspecialidad.setText(actividadAEditar.getEspecialidad() != null ? actividadAEditar.getEspecialidad() : "");
             etFecha.setText(actividadAEditar.getFecha());
             etHora.setText(actividadAEditar.getHora());
             etDescripcion.setText(actividadAEditar.getDescripcion());
             btnEliminar.setVisibility(View.VISIBLE);
         } else {
             tvFormTitle.setText("Nueva Actividad");
-            actvCategoria.setText(CATEGORIAS[0], false);
             btnEliminar.setVisibility(View.GONE);
         }
 
+        cargarProfesionales();
+
         btnGuardar.setOnClickListener(v -> guardarActividad());
         btnEliminar.setOnClickListener(v -> confirmarEliminar());
+    }
+
+    private void cargarProfesionales() {
+        if (currentUserId == null) return;
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("profesionales")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    listaProfesionales.clear();
+                    List<String> nombres = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        Profesional p = doc.toObject(Profesional.class);
+                        p.setId(doc.getId());
+                        listaProfesionales.add(p);
+
+                        String apellido = p.getApellido() != null ? p.getApellido().trim() : "";
+                        String nombre = p.getNombre() != null ? p.getNombre().trim() : "";
+                        String nombreCompleto = (!apellido.isEmpty() && !nombre.isEmpty()) ? (apellido + ", " + nombre) : (!apellido.isEmpty() ? apellido : nombre);
+                        nombres.add(nombreCompleto);
+                    }
+
+                    adapterProfesionales = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, nombres);
+                    actvProfesional.setAdapter(adapterProfesionales);
+
+                    if (listaProfesionales.isEmpty()) {
+                        Toast.makeText(this, "No tienes profesionales registrados. Primero registra un profesional.", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error al cargar profesionales: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void mostrarDatePicker() {
@@ -186,14 +232,20 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
     private void guardarActividad() {
         String titulo = etTitulo.getText() != null ? etTitulo.getText().toString().trim() : "";
-        String categoria = actvCategoria.getText() != null ? actvCategoria.getText().toString().trim() : CATEGORIAS[0];
-        String responsable = etResponsable.getText() != null ? etResponsable.getText().toString().trim() : "";
+        String responsable = actvProfesional.getText() != null ? actvProfesional.getText().toString().trim() : "";
+        String rubro = etRubro.getText() != null ? etRubro.getText().toString().trim() : "";
+        String especialidad = etEspecialidad.getText() != null ? etEspecialidad.getText().toString().trim() : "";
         String fecha = etFecha.getText() != null ? etFecha.getText().toString().trim() : "";
         String hora = etHora.getText() != null ? etHora.getText().toString().trim() : "";
         String descripcion = etDescripcion.getText() != null ? etDescripcion.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(titulo)) {
             etTitulo.setError("Ingrese el título de la actividad");
+            return;
+        }
+
+        if (TextUtils.isEmpty(responsable)) {
+            Toast.makeText(this, "Seleccione un profesional previamente registrado", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -204,7 +256,55 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
         btnGuardar.setEnabled(false);
 
+        // Validar superposición de fecha y hora
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .whereEqualTo("fecha", fecha)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    boolean superpuesto = false;
+                    String tituloExistente = "";
+
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            if (actividadAEditar != null && doc.getId().equals(actividadAEditar.getId())) {
+                                continue;
+                            }
+
+                            String horaExistente = doc.getString("hora");
+                            if (horaExistente != null && !horaExistente.trim().isEmpty() && !hora.isEmpty()) {
+                                if (horaExistente.trim().equalsIgnoreCase(hora)) {
+                                    superpuesto = true;
+                                    tituloExistente = doc.getString("titulo");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (superpuesto) {
+                        btnGuardar.setEnabled(true);
+                        String msj = "Ya existe una actividad (" + (tituloExistente != null ? tituloExistente : "") + ") programada para el día " + fecha + " a las " + hora + " hs.";
+                        new AlertDialog.Builder(this)
+                                .setTitle("Horario no disponible")
+                                .setMessage(msj)
+                                .setPositiveButton("Aceptar", null)
+                                .show();
+                        return;
+                    }
+
+                    ejecutarGuardado(titulo, rubro, especialidad, fecha, hora, responsable, descripcion);
+                })
+                .addOnFailureListener(e -> {
+                    btnGuardar.setEnabled(true);
+                    Toast.makeText(this, "Error al validar horario: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void ejecutarGuardado(String titulo, String rubro, String especialidad, String fecha, String hora, String responsable, String descripcion) {
         boolean completada = actividadAEditar != null && actividadAEditar.isCompletada();
+        String categoria = !rubro.isEmpty() ? rubro : "Profesional";
 
         Actividad actividad = new Actividad(
                 titulo,
@@ -213,6 +313,8 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 fecha,
                 hora,
                 responsable,
+                rubro,
+                especialidad,
                 completada,
                 currentUserId
         );

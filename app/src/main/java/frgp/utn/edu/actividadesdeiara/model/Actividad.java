@@ -12,6 +12,8 @@ public class Actividad implements Serializable {
     private String fecha;
     private String hora;
     private String responsable;
+    private String rubro;
+    private String especialidad;
     private boolean completada;
     private String userId;
 
@@ -19,15 +21,21 @@ public class Actividad implements Serializable {
         // Required for Firestore
     }
 
-    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, boolean completada, String userId) {
+    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, String rubro, String especialidad, boolean completada, String userId) {
         this.titulo = titulo;
         this.categoria = categoria;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.hora = hora;
         this.responsable = responsable;
+        this.rubro = rubro;
+        this.especialidad = especialidad;
         this.completada = completada;
         this.userId = userId;
+    }
+
+    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, boolean completada, String userId) {
+        this(titulo, categoria, descripcion, fecha, hora, responsable, "", "", completada, userId);
     }
 
     @Exclude
@@ -85,6 +93,22 @@ public class Actividad implements Serializable {
 
     public void setResponsable(String responsable) {
         this.responsable = responsable;
+    }
+
+    public String getRubro() {
+        return rubro;
+    }
+
+    public void setRubro(String rubro) {
+        this.rubro = rubro;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public boolean isCompletada() {

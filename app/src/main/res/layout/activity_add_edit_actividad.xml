@@ -26,13 +26,13 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- Title -->
+        <!-- Título de la actividad -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Título de la Actividad">
+            android:hint="Título de la Actividad *">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitulo"
@@ -42,36 +42,63 @@
                 android:inputType="textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Category Dropdown -->
+        <!-- Profesional Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilProfesional"
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Categoría">
+            android:hint="Profesional / Responsable *"
+            app:endIconMode="dropdown_menu">
 
             <AutoCompleteTextView
-                android:id="@+id/actvCategoria"
+                android:id="@+id/actvProfesional"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:inputType="none" />
+                android:textSize="15sp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Responsable / Profesional -->
+        <!-- Rubro (Autocompletado) -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilRubro"
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Profesional / Responsable (ej: Dr. López)">
+            android:hint="Rubro (autocompletado)">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etResponsable"
+                android:id="@+id/etRubro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:inputType="textCapWords" />
+                android:focusable="false"
+                android:clickable="false"
+                android:cursorVisible="false" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Especialidad (Autocompletada) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEspecialidad"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Especialidad (autocompletada)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEspecialidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:focusable="false"
+                android:clickable="false"
+                android:cursorVisible="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Date Field -->
@@ -81,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Fecha"
+            android:hint="Fecha *"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_calendar"
             app:endIconTint="@color/purple_500">
