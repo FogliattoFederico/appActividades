@@ -3,7 +3,9 @@ package frgp.utn.edu.actividadesdeiara;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -19,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 
@@ -52,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         cvBiometric = findViewById(R.id.cvBiometric);
         TextView tvRegister = findViewById(R.id.tvRegister);
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         pbLogin = findViewById(R.id.pbLogin);
 
         // Pre-fill email if saved
@@ -63,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> loginUser());
         tvRegister.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
+        tvForgotPassword.setOnClickListener(v -> mostrarDialogoRecuperarPassword());
         cvBiometric.setOnClickListener(v -> autenticarConHuella());
 
         // Automatically trigger fingerprint if credentials exist
@@ -259,5 +265,68 @@ public class LoginActivity extends AppCompatActivity {
                         "Detalle del error:\n" + detalleError)
                 .setPositiveButton("Entendido", null)
                 .show();
+    }
+
+    private void mostrarDialogoRecuperarPassword() {
+        String emailActual = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+
+        TextInputLayout tilModal = new TextInputLayout(
+                new ContextThemeWrapper(this, com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox)
+        );
+        tilModal.setHint("Correo electrónico registrado");
+        int paddingPx = (int) (16 * getResources().getDisplayMetrics().density);
+        tilModal.setPadding(paddingPx, paddingPx, paddingPx, 0);
+
+        TextInputEditText etModalEmail = new TextInputEditText(tilModal.getContext());
+        etModalEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        etModalEmail.setText(emailActual);
+        etModalEmail.setTextColor(ContextCompat.getColor(this, R.color.black));
+        tilModal.addView(etModalEmail);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Restablecer Contraseña")
+                .setMessage("Ingresa tu correo electrónico y te enviaremos un enlace con las instrucciones para crear una nueva contraseña:")
+                .setView(tilModal)
+                .setPositiveButton("Enviar Correo", null)
+                .setNegativeButton("Cancelar", null)
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String emailRecupero = etModalEmail.getText() != null ? etModalEmail.getText().toString().trim() : "";
+
+            if (TextUtils.isEmpty(emailRecupero) || !Patterns.EMAIL_ADDRESS.matcher(emailRecupero).matches()) {
+                tilModal.setError("Ingresa un correo electrónico válido");
+                return;
+            }
+
+            tilModal.setError(null);
+            dialog.dismiss();
+
+            enviarCorreoRecuperacion(emailRecupero);
+        });
+    }
+
+    private void enviarCorreoRecuperacion(String email) {
+        pbLogin.setVisibility(View.VISIBLE);
+
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
+
+        mAuth.sendPasswordResetEmail(email)
+                .addOnSuccessListener(aVoid -> {
+                    pbLogin.setVisibility(View.GONE);
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("Correo Enviado")
+                            .setMessage("Se ha enviado un correo electrónico a " + email + " con las instrucciones para restablecer tu contraseña.\n\nPor favor, revisa tu bandeja de entrada o carpeta de correo no deseado (Spam).")
+                            .setPositiveButton("Entendido", null)
+                            .show();
+                })
+                .addOnFailureListener(e -> {
+                    pbLogin.setVisibility(View.GONE);
+                    Toast.makeText(LoginActivity.this, "Error al enviar correo: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 }
