@@ -34,10 +34,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import frgp.utn.edu.actividadesdeiara.model.Actividad;
 import frgp.utn.edu.actividadesdeiara.model.Profesional;
@@ -70,10 +73,22 @@ public class AddEditActividadActivity extends AppCompatActivity {
             1440
     };
 
+    private static final String[] OPCIONES_FRECUENCIA_TEXTO = new String[]{
+            "Evento único (no se repite)",
+            "Se repite semanalmente"
+    };
+
+    private static final String[] OPCIONES_DURACION_TEXTO = new String[]{
+            "Durante 1 mes (4 semanas)",
+            "Durante 3 meses (12 semanas)",
+            "Durante 6 meses (26 semanas)",
+            "Indefinidamente (1 año / 52 semanas)"
+    };
+
     private TextView tvFormTitle, tvAvisoRecordatorio;
     private TextInputEditText etTitulo, etRubro, etEspecialidad, etFecha, etHora, etDescripcion;
-    private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2;
-    private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2;
+    private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2, tilRepeticion, tilDuracionRepeticion;
+    private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2, actvRepeticion, actvDuracionRepeticion;
     private View llOpcionesRecordatorio;
     private SwitchMaterial switchRecordatorio;
     private MaterialButton btnGuardar, btnEliminar;
@@ -117,6 +132,12 @@ public class AddEditActividadActivity extends AppCompatActivity {
         etHora = findViewById(R.id.etHora);
         tilFecha = findViewById(R.id.tilFecha);
         tilHora = findViewById(R.id.tilHora);
+
+        tilRepeticion = findViewById(R.id.tilRepeticionActividad);
+        actvRepeticion = findViewById(R.id.actvRepeticionActividad);
+        tilDuracionRepeticion = findViewById(R.id.tilDuracionRepeticionActividad);
+        actvDuracionRepeticion = findViewById(R.id.actvDuracionRepeticionActividad);
+
         etDescripcion = findViewById(R.id.etDescripcion);
         switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
         llOpcionesRecordatorio = findViewById(R.id.llOpcionesRecordatorioActividad);
@@ -138,6 +159,23 @@ public class AddEditActividadActivity extends AppCompatActivity {
         actvProfesional.setAdapter(adapterProfesionales);
 
         bindDropdownClick(actvProfesional, tilProfesional);
+
+        // Populate Repetición Adapters
+        ArrayAdapter<String> adapterFrecuencia = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_FRECUENCIA_TEXTO);
+        actvRepeticion.setAdapter(adapterFrecuencia);
+        actvRepeticion.setText(OPCIONES_FRECUENCIA_TEXTO[0], false);
+
+        ArrayAdapter<String> adapterDuracion = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_DURACION_TEXTO);
+        actvDuracionRepeticion.setAdapter(adapterDuracion);
+        actvDuracionRepeticion.setText(OPCIONES_DURACION_TEXTO[1], false);
+
+        bindDropdownClick(actvRepeticion, tilRepeticion);
+        bindDropdownClick(actvDuracionRepeticion, tilDuracionRepeticion);
+
+        actvRepeticion.setOnItemClickListener((parent, view, position, id) -> {
+            boolean esSemanal = position == 1;
+            tilDuracionRepeticion.setVisibility(esSemanal ? View.VISIBLE : View.GONE);
+        });
 
         // Populate Recordatorio Adapters
         ArrayAdapter<String> adapterCantidad = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_CANTIDAD_TEXTO);
@@ -205,6 +243,10 @@ public class AddEditActividadActivity extends AppCompatActivity {
             etFecha.setText(actividadAEditar.getFecha());
             etHora.setText(actividadAEditar.getHora());
             etDescripcion.setText(actividadAEditar.getDescripcion());
+
+            boolean esSemanal = "Semanal".equalsIgnoreCase(actividadAEditar.getFrecuenciaRepeticion());
+            actvRepeticion.setText(OPCIONES_FRECUENCIA_TEXTO[esSemanal ? 1 : 0], false);
+            tilDuracionRepeticion.setVisibility(View.GONE);
 
             switchRecordatorio.setChecked(actividadAEditar.isRecordatorio());
             llOpcionesRecordatorio.setVisibility(actividadAEditar.isRecordatorio() ? View.VISIBLE : View.GONE);
@@ -373,6 +415,37 @@ public class AddEditActividadActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private List<String> generarFechasRepeticion(String fechaInicial, int semanas) {
+        List<String> fechas = new ArrayList<>();
+        if (fechaInicial == null || fechaInicial.trim().isEmpty()) return fechas;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date dateObj = sdf.parse(fechaInicial.trim());
+            if (dateObj == null) return fechas;
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateObj);
+
+            for (int i = 0; i < semanas; i++) {
+                fechas.add(sdf.format(cal.getTime()));
+                cal.add(Calendar.WEEK_OF_YEAR, 1);
+            }
+        } catch (Exception ignored) {
+        }
+
+        return fechas;
+    }
+
+    private int obtenerSemanasDuracionActual() {
+        String texto = actvDuracionRepeticion != null && actvDuracionRepeticion.getText() != null ? actvDuracionRepeticion.getText().toString().trim() : "";
+        if (texto.contains("1 mes") || texto.contains("4")) return 4;
+        if (texto.contains("3 meses") || texto.contains("12")) return 12;
+        if (texto.contains("6 meses") || texto.contains("26")) return 26;
+        if (texto.contains("1 año") || texto.contains("52") || texto.contains("Indefinidamente")) return 52;
+        return 1;
+    }
+
     private void guardarActividad() {
         String titulo = etTitulo.getText() != null ? etTitulo.getText().toString().trim() : "";
         String responsable = actvProfesional.getText() != null ? actvProfesional.getText().toString().trim() : "";
@@ -397,17 +470,25 @@ public class AddEditActividadActivity extends AppCompatActivity {
             return;
         }
 
+        boolean esSemanal = actvRepeticion.getText() != null && actvRepeticion.getText().toString().trim().startsWith("Se repite");
+        int semanasDuracion = esSemanal ? obtenerSemanasDuracionActual() : 1;
+
+        List<String> fechasAProgramar = generarFechasRepeticion(fecha, semanasDuracion);
+        if (fechasAProgramar.isEmpty()) {
+            fechasAProgramar.add(fecha);
+        }
+
         btnGuardar.setEnabled(false);
 
-        // Validar superposición de fecha y hora
+        // Validar que NO exista ninguna otra actividad en NINGUNA de las fechas/horarios correspondientes
         db.collection("users")
                 .document(currentUserId)
                 .collection("actividades")
-                .whereEqualTo("fecha", fecha)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     boolean superpuesto = false;
-                    String tituloExistente = "";
+                    String fechaConflicto = "";
+                    String tituloConflicto = "";
 
                     if (snapshot != null) {
                         for (QueryDocumentSnapshot doc : snapshot) {
@@ -415,11 +496,14 @@ public class AddEditActividadActivity extends AppCompatActivity {
                                 continue;
                             }
 
+                            String fechaExistente = doc.getString("fecha");
                             String horaExistente = doc.getString("hora");
-                            if (horaExistente != null && !horaExistente.trim().isEmpty() && !hora.isEmpty()) {
-                                if (horaExistente.trim().equalsIgnoreCase(hora)) {
+
+                            if (fechaExistente != null && horaExistente != null && !horaExistente.trim().isEmpty() && !hora.isEmpty()) {
+                                if (fechasAProgramar.contains(fechaExistente.trim()) && horaExistente.trim().equalsIgnoreCase(hora)) {
                                     superpuesto = true;
-                                    tituloExistente = doc.getString("titulo");
+                                    fechaConflicto = fechaExistente.trim();
+                                    tituloConflicto = doc.getString("titulo");
                                     break;
                                 }
                             }
@@ -428,7 +512,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
                     if (superpuesto) {
                         btnGuardar.setEnabled(true);
-                        String msj = "Ya existe una actividad (" + (tituloExistente != null ? tituloExistente : "") + ") programada para el día " + fecha + " a las " + hora + " hs.";
+                        String msj = "No se pueden programar las repeticiones: El día " + fechaConflicto + " a las " + hora + " hs ya existe la actividad '" + (tituloConflicto != null ? tituloConflicto : "") + "'.";
                         new AlertDialog.Builder(this)
                                 .setTitle("Horario no disponible")
                                 .setMessage(msj)
@@ -437,11 +521,11 @@ public class AddEditActividadActivity extends AppCompatActivity {
                         return;
                     }
 
-                    ejecutarGuardado(titulo, rubro, especialidad, fecha, hora, responsable, descripcion);
+                    ejecutarGuardadoSerie(titulo, rubro, especialidad, fechasAProgramar, hora, responsable, descripcion, esSemanal);
                 })
                 .addOnFailureListener(e -> {
                     btnGuardar.setEnabled(true);
-                    Toast.makeText(this, "Error al validar horario: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al validar disponibilidades: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -535,7 +619,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
         }
     }
 
-    private void ejecutarGuardado(String titulo, String rubro, String especialidad, String fecha, String hora, String responsable, String descripcion) {
+    private void ejecutarGuardadoSerie(String titulo, String rubro, String especialidad, List<String> fechas, String hora, String responsable, String descripcion, boolean esSemanal) {
         boolean completada = actividadAEditar != null && actividadAEditar.isCompletada();
         String categoria = !rubro.isEmpty() ? rubro : "Profesional";
 
@@ -546,32 +630,39 @@ public class AddEditActividadActivity extends AppCompatActivity {
         int minutosAnticipacion1 = recordatorio ? obtenerMinutosDeTexto(actvAnticipacionRecordatorio1) : 0;
         int minutosAnticipacion2 = (recordatorio && esDoble) ? obtenerMinutosDeTexto(actvAnticipacionRecordatorio2) : 0;
 
-        long eventMillis = calcularMillisRecordatorio(fecha, hora);
+        String repeatGroupId = (actividadAEditar != null && actividadAEditar.getRepeatGroupId() != null)
+                ? actividadAEditar.getRepeatGroupId()
+                : UUID.randomUUID().toString();
 
-        long recordatorioTimeMillis1 = (recordatorio && eventMillis > 0) ? (eventMillis - (minutosAnticipacion1 * 60 * 1000L)) : 0L;
-        long recordatorioTimeMillis2 = (recordatorio && esDoble && eventMillis > 0) ? (eventMillis - (minutosAnticipacion2 * 60 * 1000L)) : 0L;
-
-        Actividad actividad = new Actividad(
-                titulo,
-                categoria,
-                descripcion,
-                fecha,
-                hora,
-                responsable,
-                rubro,
-                especialidad,
-                completada,
-                recordatorio,
-                cantidadRecordatorios,
-                minutosAnticipacion1,
-                minutosAnticipacion2,
-                recordatorioTimeMillis1,
-                recordatorioTimeMillis2,
-                currentUserId
-        );
+        String frecuencia = esSemanal ? "Semanal" : "Único";
 
         if (actividadAEditar != null && actividadAEditar.getId() != null) {
             String actividadId = actividadAEditar.getId();
+            long eventMillis = calcularMillisRecordatorio(fechas.get(0), hora);
+            long recordatorioTimeMillis1 = (recordatorio && eventMillis > 0) ? (eventMillis - (minutosAnticipacion1 * 60 * 1000L)) : 0L;
+            long recordatorioTimeMillis2 = (recordatorio && esDoble && eventMillis > 0) ? (eventMillis - (minutosAnticipacion2 * 60 * 1000L)) : 0L;
+
+            Actividad actividad = new Actividad(
+                    titulo,
+                    categoria,
+                    descripcion,
+                    fechas.get(0),
+                    hora,
+                    responsable,
+                    rubro,
+                    especialidad,
+                    completada,
+                    recordatorio,
+                    cantidadRecordatorios,
+                    minutosAnticipacion1,
+                    minutosAnticipacion2,
+                    recordatorioTimeMillis1,
+                    recordatorioTimeMillis2,
+                    currentUserId
+            );
+            actividad.setRepeatGroupId(repeatGroupId);
+            actividad.setFrecuenciaRepeticion(frecuencia);
+
             db.collection("users")
                     .document(currentUserId)
                     .collection("actividades")
@@ -595,27 +686,62 @@ public class AddEditActividadActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
-            db.collection("users")
-                    .document(currentUserId)
-                    .collection("actividades")
-                    .add(actividad)
-                    .addOnSuccessListener(documentReference -> {
-                        String actividadId = documentReference.getId();
-                        if (recordatorio) {
-                            if (recordatorioTimeMillis1 > System.currentTimeMillis()) {
-                                programarAlarmaNotificacion(actividadId, 0, titulo, descripcion, recordatorioTimeMillis1);
+            // Guardar todas las repeticiones generadas
+            int totalGuardados = fechas.size();
+            final int[] guardadosExitosos = {0};
+
+            for (String f : fechas) {
+                long eventMillis = calcularMillisRecordatorio(f, hora);
+                long recordatorioTimeMillis1 = (recordatorio && eventMillis > 0) ? (eventMillis - (minutosAnticipacion1 * 60 * 1000L)) : 0L;
+                long recordatorioTimeMillis2 = (recordatorio && esDoble && eventMillis > 0) ? (eventMillis - (minutosAnticipacion2 * 60 * 1000L)) : 0L;
+
+                Actividad actividad = new Actividad(
+                        titulo,
+                        categoria,
+                        descripcion,
+                        f,
+                        hora,
+                        responsable,
+                        rubro,
+                        especialidad,
+                        false,
+                        recordatorio,
+                        cantidadRecordatorios,
+                        minutosAnticipacion1,
+                        minutosAnticipacion2,
+                        recordatorioTimeMillis1,
+                        recordatorioTimeMillis2,
+                        currentUserId
+                );
+                actividad.setRepeatGroupId(repeatGroupId);
+                actividad.setFrecuenciaRepeticion(frecuencia);
+
+                db.collection("users")
+                        .document(currentUserId)
+                        .collection("actividades")
+                        .add(actividad)
+                        .addOnSuccessListener(documentReference -> {
+                            String actividadId = documentReference.getId();
+                            if (recordatorio) {
+                                if (recordatorioTimeMillis1 > System.currentTimeMillis()) {
+                                    programarAlarmaNotificacion(actividadId, 0, titulo, descripcion, recordatorioTimeMillis1);
+                                }
+                                if (esDoble && recordatorioTimeMillis2 > System.currentTimeMillis()) {
+                                    programarAlarmaNotificacion(actividadId, 100000, titulo, descripcion, recordatorioTimeMillis2);
+                                }
                             }
-                            if (esDoble && recordatorioTimeMillis2 > System.currentTimeMillis()) {
-                                programarAlarmaNotificacion(actividadId, 100000, titulo, descripcion, recordatorioTimeMillis2);
+                            guardadosExitosos[0]++;
+                            if (guardadosExitosos[0] == totalGuardados) {
+                                String msj = totalGuardados > 1 ? ("Se agendaron " + totalGuardados + " actividades repetidas con éxito") : "Actividad guardada con éxito";
+                                Toast.makeText(this, msj, Toast.LENGTH_SHORT).show();
+                                finish();
                             }
-                        }
-                        Toast.makeText(this, "Actividad guardada con éxito", Toast.LENGTH_SHORT).show();
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        btnGuardar.setEnabled(true);
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            btnGuardar.setEnabled(true);
+                            Toast.makeText(this, "Error al guardar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+            }
         }
     }
 

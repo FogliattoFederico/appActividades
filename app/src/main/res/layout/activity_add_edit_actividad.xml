@@ -151,6 +151,49 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Repetición Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilRepeticionActividad"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Frecuencia de repetición"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvRepeticionActividad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Duración de Repetición (Si es semanal) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDuracionRepeticionActividad"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="¿Durante cuánto tiempo se repite?"
+            android:visibility="gone"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvDuracionRepeticionActividad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Description / Notes -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
