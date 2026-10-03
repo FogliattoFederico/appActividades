@@ -79,6 +79,10 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
             if (holder.ivHorario != null) holder.ivHorario.setVisibility(View.GONE);
         }
 
+        if (holder.ivRecordatorio != null) {
+            holder.ivRecordatorio.setVisibility(tarea.isRecordatorio() ? View.VISIBLE : View.GONE);
+        }
+
         holder.cbCompletada.setOnCheckedChangeListener(null);
         holder.cbCompletada.setChecked(tarea.isCompletada());
 
@@ -123,6 +127,7 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
         TextView tvHorario;
         ImageView ivFecha;
         ImageView ivHorario;
+        ImageView ivRecordatorio;
         CheckBox cbCompletada;
 
         public TareaViewHolder(@NonNull View itemView) {
@@ -133,6 +138,7 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
             tvHorario = itemView.findViewById(R.id.tvHorarioTarea);
             ivFecha = itemView.findViewById(R.id.ivFechaTarea);
             ivHorario = itemView.findViewById(R.id.ivHorarioTarea);
+            ivRecordatorio = itemView.findViewById(R.id.ivRecordatorioTarea);
             cbCompletada = itemView.findViewById(R.id.cbCompletadaTarea);
         }
     }

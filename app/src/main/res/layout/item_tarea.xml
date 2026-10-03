@@ -97,6 +97,16 @@
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
+            <ImageView
+                android:id="@+id/ivRecordatorioTarea"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="14dp"
+                android:src="@drawable/ic_notifications"
+                app:tint="@color/cat_medico"
+                android:visibility="gone"
+                android:contentDescription="Recordatorio activo" />
+
         </LinearLayout>
 
     </LinearLayout>
