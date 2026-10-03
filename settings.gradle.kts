@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Actividades de Iara"
+rootProject.name = "Mi Agendita"
 include(":app")
