@@ -1,7 +1,14 @@
 package frgp.utn.edu.actividadesdeiara;
 
+import android.Manifest;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,11 +19,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,15 +41,41 @@ import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.model.Actividad;
 import frgp.utn.edu.actividadesdeiara.model.Profesional;
+import frgp.utn.edu.actividadesdeiara.receiver.NotificationReceiver;
 
 public class AddEditActividadActivity extends AppCompatActivity {
 
     public static final String EXTRA_ACTIVIDAD = "extra_actividad";
 
-    private TextView tvFormTitle;
+    private static final String[] OPCIONES_CANTIDAD_TEXTO = new String[]{
+            "1 recordatorio",
+            "2 recordatorios (Doble aviso)"
+    };
+
+    private static final String[] OPCIONES_ANTICIPACION_TEXTO = new String[]{
+            "En el momento de la actividad",
+            "10 minutos antes",
+            "30 minutos antes",
+            "1 hora antes",
+            "2 horas antes",
+            "1 día antes"
+    };
+
+    private static final int[] OPCIONES_ANTICIPACION_MINUTOS = new int[]{
+            0,
+            10,
+            30,
+            60,
+            120,
+            1440
+    };
+
+    private TextView tvFormTitle, tvAvisoRecordatorio;
     private TextInputEditText etTitulo, etRubro, etEspecialidad, etFecha, etHora, etDescripcion;
-    private TextInputLayout tilProfesional, tilFecha, tilHora;
-    private AutoCompleteTextView actvProfesional;
+    private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2;
+    private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2;
+    private View llOpcionesRecordatorio;
+    private SwitchMaterial switchRecordatorio;
     private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
@@ -82,18 +118,43 @@ public class AddEditActividadActivity extends AppCompatActivity {
         tilFecha = findViewById(R.id.tilFecha);
         tilHora = findViewById(R.id.tilHora);
         etDescripcion = findViewById(R.id.etDescripcion);
+        switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
+        llOpcionesRecordatorio = findViewById(R.id.llOpcionesRecordatorioActividad);
+
+        tilCantidadRecordatorios = findViewById(R.id.tilCantidadRecordatoriosActividad);
+        actvCantidadRecordatorios = findViewById(R.id.actvCantidadRecordatoriosActividad);
+
+        tilAnticipacionRecordatorio1 = findViewById(R.id.tilAnticipacionRecordatorioActividad1);
+        actvAnticipacionRecordatorio1 = findViewById(R.id.actvAnticipacionRecordatorioActividad1);
+
+        tilAnticipacionRecordatorio2 = findViewById(R.id.tilAnticipacionRecordatorioActividad2);
+        actvAnticipacionRecordatorio2 = findViewById(R.id.actvAnticipacionRecordatorioActividad2);
+
+        tvAvisoRecordatorio = findViewById(R.id.tvAvisoRecordatorioActividad);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnEliminar = findViewById(R.id.btnEliminar);
 
         adapterProfesionales = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, new ArrayList<>());
         actvProfesional.setAdapter(adapterProfesionales);
 
-        View.OnClickListener listenerProfesional = v -> actvProfesional.showDropDown();
-        actvProfesional.setOnClickListener(listenerProfesional);
-        if (tilProfesional != null) {
-            tilProfesional.setOnClickListener(listenerProfesional);
-            tilProfesional.setEndIconOnClickListener(listenerProfesional);
-        }
+        bindDropdownClick(actvProfesional, tilProfesional);
+
+        // Populate Recordatorio Adapters
+        ArrayAdapter<String> adapterCantidad = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_CANTIDAD_TEXTO);
+        actvCantidadRecordatorios.setAdapter(adapterCantidad);
+        actvCantidadRecordatorios.setText(OPCIONES_CANTIDAD_TEXTO[0], false);
+
+        ArrayAdapter<String> adapterAnticipacion1 = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_ANTICIPACION_TEXTO);
+        actvAnticipacionRecordatorio1.setAdapter(adapterAnticipacion1);
+        actvAnticipacionRecordatorio1.setText(OPCIONES_ANTICIPACION_TEXTO[0], false);
+
+        ArrayAdapter<String> adapterAnticipacion2 = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, OPCIONES_ANTICIPACION_TEXTO);
+        actvAnticipacionRecordatorio2.setAdapter(adapterAnticipacion2);
+        actvAnticipacionRecordatorio2.setText(OPCIONES_ANTICIPACION_TEXTO[1], false);
+
+        bindDropdownClick(actvCantidadRecordatorios, tilCantidadRecordatorios);
+        bindDropdownClick(actvAnticipacionRecordatorio1, tilAnticipacionRecordatorio1);
+        bindDropdownClick(actvAnticipacionRecordatorio2, tilAnticipacionRecordatorio2);
 
         actvProfesional.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < listaProfesionales.size()) {
@@ -118,6 +179,18 @@ public class AddEditActividadActivity extends AppCompatActivity {
             tilHora.setEndIconOnClickListener(listenerHora);
         }
 
+        switchRecordatorio.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            llOpcionesRecordatorio.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            if (isChecked) {
+                solicitarPermisoNotificaciones();
+                actualizarVisibilidadYTextoAviso();
+            }
+        });
+
+        actvCantidadRecordatorios.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
+        actvAnticipacionRecordatorio1.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
+        actvAnticipacionRecordatorio2.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
+
         // Check if edit mode
         if (getIntent().hasExtra(EXTRA_ACTIVIDAD)) {
             actividadAEditar = (Actividad) getIntent().getSerializableExtra(EXTRA_ACTIVIDAD);
@@ -132,6 +205,23 @@ public class AddEditActividadActivity extends AppCompatActivity {
             etFecha.setText(actividadAEditar.getFecha());
             etHora.setText(actividadAEditar.getHora());
             etDescripcion.setText(actividadAEditar.getDescripcion());
+
+            switchRecordatorio.setChecked(actividadAEditar.isRecordatorio());
+            llOpcionesRecordatorio.setVisibility(actividadAEditar.isRecordatorio() ? View.VISIBLE : View.GONE);
+
+            int cantidad = actividadAEditar.getCantidadRecordatorios() > 0 ? actividadAEditar.getCantidadRecordatorios() : 1;
+            actvCantidadRecordatorios.setText(OPCIONES_CANTIDAD_TEXTO[cantidad == 2 ? 1 : 0], false);
+
+            int min1 = actividadAEditar.getMinutosAnticipacion();
+            int idx1 = buscarIndiceMinutos(min1);
+            actvAnticipacionRecordatorio1.setText(OPCIONES_ANTICIPACION_TEXTO[idx1], false);
+
+            int min2 = actividadAEditar.getMinutosAnticipacion2();
+            int idx2 = buscarIndiceMinutos(min2);
+            actvAnticipacionRecordatorio2.setText(OPCIONES_ANTICIPACION_TEXTO[idx2], false);
+
+            actualizarVisibilidadYTextoAviso();
+
             btnEliminar.setVisibility(View.VISIBLE);
         } else {
             tvFormTitle.setText("Nueva Actividad");
@@ -142,6 +232,59 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
         btnGuardar.setOnClickListener(v -> guardarActividad());
         btnEliminar.setOnClickListener(v -> confirmarEliminar());
+    }
+
+    private void bindDropdownClick(AutoCompleteTextView actv, TextInputLayout til) {
+        View.OnClickListener listener = v -> actv.showDropDown();
+        actv.setOnClickListener(listener);
+        if (til != null) {
+            til.setOnClickListener(listener);
+            til.setEndIconOnClickListener(listener);
+        }
+    }
+
+    private int buscarIndiceMinutos(int minutos) {
+        for (int i = 0; i < OPCIONES_ANTICIPACION_MINUTOS.length; i++) {
+            if (OPCIONES_ANTICIPACION_MINUTOS[i] == minutos) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private int obtenerMinutosDeTexto(AutoCompleteTextView actv) {
+        String seleccion = actv.getText() != null ? actv.getText().toString().trim() : "";
+        for (int i = 0; i < OPCIONES_ANTICIPACION_TEXTO.length; i++) {
+            if (OPCIONES_ANTICIPACION_TEXTO[i].equalsIgnoreCase(seleccion)) {
+                return OPCIONES_ANTICIPACION_MINUTOS[i];
+            }
+        }
+        return 0;
+    }
+
+    private void actualizarVisibilidadYTextoAviso() {
+        boolean esDoble = actvCantidadRecordatorios.getText() != null && actvCantidadRecordatorios.getText().toString().trim().startsWith("2");
+        tilAnticipacionRecordatorio2.setVisibility(esDoble ? View.VISIBLE : View.GONE);
+
+        String texto1 = actvAnticipacionRecordatorio1.getText() != null ? actvAnticipacionRecordatorio1.getText().toString().trim() : "";
+        if (!esDoble) {
+            if (texto1.equals(OPCIONES_ANTICIPACION_TEXTO[0])) {
+                tvAvisoRecordatorio.setText("Se enviará 1 notificación en la fecha y hora indicadas.");
+            } else {
+                tvAvisoRecordatorio.setText("Se enviará 1 notificación " + texto1.toLowerCase(Locale.getDefault()) + " del horario agendado.");
+            }
+        } else {
+            String texto2 = actvAnticipacionRecordatorio2.getText() != null ? actvAnticipacionRecordatorio2.getText().toString().trim() : "";
+            tvAvisoRecordatorio.setText("Se enviarán 2 notificaciones: la primera " + texto1.toLowerCase(Locale.getDefault()) + " y la segunda " + texto2.toLowerCase(Locale.getDefault()) + ".");
+        }
+    }
+
+    private void solicitarPermisoNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
     }
 
     private void cargarProfesionales() {
@@ -302,9 +445,111 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 });
     }
 
+    private long calcularMillisRecordatorio(String fecha, String horario) {
+        if (TextUtils.isEmpty(fecha)) return 0L;
+
+        try {
+            Calendar cal = Calendar.getInstance();
+            String[] partesFecha = fecha.split("/");
+            if (partesFecha.length == 3) {
+                int d = Integer.parseInt(partesFecha[0].trim());
+                int m = Integer.parseInt(partesFecha[1].trim()) - 1;
+                int y = Integer.parseInt(partesFecha[2].trim());
+                cal.set(Calendar.YEAR, y);
+                cal.set(Calendar.MONTH, m);
+                cal.set(Calendar.DAY_OF_MONTH, d);
+            }
+
+            int hour = 9;
+            int minute = 0;
+            if (!TextUtils.isEmpty(horario) && horario.contains(":")) {
+                String[] partesHora = horario.split(":");
+                if (partesHora.length >= 2) {
+                    hour = Integer.parseInt(partesHora[0].trim());
+                    minute = Integer.parseInt(partesHora[1].trim());
+                }
+            }
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, minute);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+
+            return cal.getTimeInMillis();
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    private void programarAlarmaNotificacion(String actividadId, int offset, String titulo, String descripcion, long timeMillis) {
+        if (actividadId == null || timeMillis <= System.currentTimeMillis()) return;
+
+        try {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, NotificationReceiver.class);
+            int requestCode = Math.abs(actividadId.hashCode()) + offset + 200000;
+            intent.putExtra("id", requestCode);
+            intent.putExtra("titulo", "Recordatorio de Actividad");
+            intent.putExtra("descripcion", !TextUtils.isEmpty(descripcion) ? (titulo + " - " + descripcion) : titulo);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            if (alarmManager != null) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeMillis, pendingIntent);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void cancelarAlarmaNotificacion(String actividadId) {
+        if (actividadId == null) return;
+        try {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, NotificationReceiver.class);
+
+            int requestCode1 = Math.abs(actividadId.hashCode()) + 200000;
+            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(
+                    this,
+                    requestCode1,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            int requestCode2 = Math.abs(actividadId.hashCode()) + 300000;
+            PendingIntent pendingIntent2 = PendingIntent.getBroadcast(
+                    this,
+                    requestCode2,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            if (alarmManager != null) {
+                alarmManager.cancel(pendingIntent1);
+                alarmManager.cancel(pendingIntent2);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
     private void ejecutarGuardado(String titulo, String rubro, String especialidad, String fecha, String hora, String responsable, String descripcion) {
         boolean completada = actividadAEditar != null && actividadAEditar.isCompletada();
         String categoria = !rubro.isEmpty() ? rubro : "Profesional";
+
+        boolean recordatorio = switchRecordatorio.isChecked();
+        boolean esDoble = actvCantidadRecordatorios.getText() != null && actvCantidadRecordatorios.getText().toString().trim().startsWith("2");
+        int cantidadRecordatorios = recordatorio ? (esDoble ? 2 : 1) : 0;
+
+        int minutosAnticipacion1 = recordatorio ? obtenerMinutosDeTexto(actvAnticipacionRecordatorio1) : 0;
+        int minutosAnticipacion2 = (recordatorio && esDoble) ? obtenerMinutosDeTexto(actvAnticipacionRecordatorio2) : 0;
+
+        long eventMillis = calcularMillisRecordatorio(fecha, hora);
+
+        long recordatorioTimeMillis1 = (recordatorio && eventMillis > 0) ? (eventMillis - (minutosAnticipacion1 * 60 * 1000L)) : 0L;
+        long recordatorioTimeMillis2 = (recordatorio && esDoble && eventMillis > 0) ? (eventMillis - (minutosAnticipacion2 * 60 * 1000L)) : 0L;
 
         Actividad actividad = new Actividad(
                 titulo,
@@ -316,17 +561,32 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 rubro,
                 especialidad,
                 completada,
+                recordatorio,
+                cantidadRecordatorios,
+                minutosAnticipacion1,
+                minutosAnticipacion2,
+                recordatorioTimeMillis1,
+                recordatorioTimeMillis2,
                 currentUserId
         );
 
         if (actividadAEditar != null && actividadAEditar.getId() != null) {
-            // Update existing
+            String actividadId = actividadAEditar.getId();
             db.collection("users")
                     .document(currentUserId)
                     .collection("actividades")
-                    .document(actividadAEditar.getId())
+                    .document(actividadId)
                     .set(actividad)
                     .addOnSuccessListener(aVoid -> {
+                        cancelarAlarmaNotificacion(actividadId);
+                        if (recordatorio) {
+                            if (recordatorioTimeMillis1 > System.currentTimeMillis()) {
+                                programarAlarmaNotificacion(actividadId, 0, titulo, descripcion, recordatorioTimeMillis1);
+                            }
+                            if (esDoble && recordatorioTimeMillis2 > System.currentTimeMillis()) {
+                                programarAlarmaNotificacion(actividadId, 100000, titulo, descripcion, recordatorioTimeMillis2);
+                            }
+                        }
                         Toast.makeText(this, "Actividad actualizada", Toast.LENGTH_SHORT).show();
                         finish();
                     })
@@ -335,12 +595,20 @@ public class AddEditActividadActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
-            // Create new
             db.collection("users")
                     .document(currentUserId)
                     .collection("actividades")
                     .add(actividad)
                     .addOnSuccessListener(documentReference -> {
+                        String actividadId = documentReference.getId();
+                        if (recordatorio) {
+                            if (recordatorioTimeMillis1 > System.currentTimeMillis()) {
+                                programarAlarmaNotificacion(actividadId, 0, titulo, descripcion, recordatorioTimeMillis1);
+                            }
+                            if (esDoble && recordatorioTimeMillis2 > System.currentTimeMillis()) {
+                                programarAlarmaNotificacion(actividadId, 100000, titulo, descripcion, recordatorioTimeMillis2);
+                            }
+                        }
                         Toast.makeText(this, "Actividad guardada con éxito", Toast.LENGTH_SHORT).show();
                         finish();
                     })
@@ -358,6 +626,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 .setTitle("Eliminar Actividad")
                 .setMessage("¿Estás seguro de que deseas eliminar esta actividad?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
+                    cancelarAlarmaNotificacion(actividadAEditar.getId());
                     db.collection("users")
                             .document(currentUserId)
                             .collection("actividades")

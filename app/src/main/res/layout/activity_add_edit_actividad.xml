@@ -169,6 +169,100 @@
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Switch Recordatorio -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchRecordatorioActividad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="🔔 Activar recordatorio / notificación"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <!-- Container for Recordatorio Settings -->
+        <LinearLayout
+            android:id="@+id/llOpcionesRecordatorioActividad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Cantidad de Notificaciones Dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCantidadRecordatoriosActividad"
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="¿Cuántas notificaciones enviar?"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvCantidadRecordatoriosActividad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Primer Recordatorio Dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilAnticipacionRecordatorioActividad1"
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Primer aviso / Notificación"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvAnticipacionRecordatorioActividad1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Segundo Recordatorio Dropdown (Visible si eligió 2) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilAnticipacionRecordatorioActividad2"
+                style="@style/Widget.ActividadesDeIara.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Segundo aviso (opcional)"
+                android:visibility="gone"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvAnticipacionRecordatorioActividad2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvAvisoRecordatorioActividad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Se enviará una notificación a la fecha y hora indicadas."
+                android:textColor="@color/purple_700"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
         <!-- Action Buttons -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardar"

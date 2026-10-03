@@ -15,13 +15,19 @@ public class Actividad implements Serializable {
     private String rubro;
     private String especialidad;
     private boolean completada;
+    private boolean recordatorio;
+    private int cantidadRecordatorios = 1; // 1 o 2
+    private int minutosAnticipacion = 0; // Para recordatorio 1
+    private int minutosAnticipacion2 = 0; // Para recordatorio 2
+    private long recordatorioTimeMillis;
+    private long recordatorioTimeMillis2;
     private String userId;
 
     public Actividad() {
         // Required for Firestore
     }
 
-    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, String rubro, String especialidad, boolean completada, String userId) {
+    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, String rubro, String especialidad, boolean completada, boolean recordatorio, int cantidadRecordatorios, int minutosAnticipacion, int minutosAnticipacion2, long recordatorioTimeMillis, long recordatorioTimeMillis2, String userId) {
         this.titulo = titulo;
         this.categoria = categoria;
         this.descripcion = descripcion;
@@ -31,11 +37,21 @@ public class Actividad implements Serializable {
         this.rubro = rubro;
         this.especialidad = especialidad;
         this.completada = completada;
+        this.recordatorio = recordatorio;
+        this.cantidadRecordatorios = cantidadRecordatorios;
+        this.minutosAnticipacion = minutosAnticipacion;
+        this.minutosAnticipacion2 = minutosAnticipacion2;
+        this.recordatorioTimeMillis = recordatorioTimeMillis;
+        this.recordatorioTimeMillis2 = recordatorioTimeMillis2;
         this.userId = userId;
     }
 
+    public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, String rubro, String especialidad, boolean completada, String userId) {
+        this(titulo, categoria, descripcion, fecha, hora, responsable, rubro, especialidad, completada, false, 1, 0, 0, 0L, 0L, userId);
+    }
+
     public Actividad(String titulo, String categoria, String descripcion, String fecha, String hora, String responsable, boolean completada, String userId) {
-        this(titulo, categoria, descripcion, fecha, hora, responsable, "", "", completada, userId);
+        this(titulo, categoria, descripcion, fecha, hora, responsable, "", "", completada, false, 1, 0, 0, 0L, 0L, userId);
     }
 
     @Exclude
@@ -117,6 +133,54 @@ public class Actividad implements Serializable {
 
     public void setCompletada(boolean completada) {
         this.completada = completada;
+    }
+
+    public boolean isRecordatorio() {
+        return recordatorio;
+    }
+
+    public void setRecordatorio(boolean recordatorio) {
+        this.recordatorio = recordatorio;
+    }
+
+    public int getCantidadRecordatorios() {
+        return cantidadRecordatorios;
+    }
+
+    public void setCantidadRecordatorios(int cantidadRecordatorios) {
+        this.cantidadRecordatorios = cantidadRecordatorios;
+    }
+
+    public int getMinutosAnticipacion() {
+        return minutosAnticipacion;
+    }
+
+    public void setMinutosAnticipacion(int minutosAnticipacion) {
+        this.minutosAnticipacion = minutosAnticipacion;
+    }
+
+    public int getMinutosAnticipacion2() {
+        return minutosAnticipacion2;
+    }
+
+    public void setMinutosAnticipacion2(int minutosAnticipacion2) {
+        this.minutosAnticipacion2 = minutosAnticipacion2;
+    }
+
+    public long getRecordatorioTimeMillis() {
+        return recordatorioTimeMillis;
+    }
+
+    public void setRecordatorioTimeMillis(long recordatorioTimeMillis) {
+        this.recordatorioTimeMillis = recordatorioTimeMillis;
+    }
+
+    public long getRecordatorioTimeMillis2() {
+        return recordatorioTimeMillis2;
+    }
+
+    public void setRecordatorioTimeMillis2(long recordatorioTimeMillis2) {
+        this.recordatorioTimeMillis2 = recordatorioTimeMillis2;
     }
 
     public String getUserId() {

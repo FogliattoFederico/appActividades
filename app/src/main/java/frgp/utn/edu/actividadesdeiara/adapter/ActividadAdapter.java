@@ -83,6 +83,10 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             if (holder.ivHora != null) holder.ivHora.setVisibility(View.GONE);
         }
 
+        if (holder.ivRecordatorio != null) {
+            holder.ivRecordatorio.setVisibility(actividad.isRecordatorio() ? View.VISIBLE : View.GONE);
+        }
+
         if (actividad.getDescripcion() != null && !actividad.getDescripcion().trim().isEmpty()) {
             holder.tvDescripcion.setText(actividad.getDescripcion());
             holder.tvDescripcion.setVisibility(View.VISIBLE);
@@ -171,6 +175,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         ImageView ivCategoryIcon;
         ImageView ivFecha;
         ImageView ivHora;
+        ImageView ivRecordatorio;
         TextView tvCategory;
         TextView tvTitulo;
         TextView tvResponsable;
@@ -185,6 +190,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             ivCategoryIcon = itemView.findViewById(R.id.ivCategoryIcon);
             ivFecha = itemView.findViewById(R.id.ivFecha);
             ivHora = itemView.findViewById(R.id.ivHora);
+            ivRecordatorio = itemView.findViewById(R.id.ivRecordatorioActividad);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvResponsable = itemView.findViewById(R.id.tvResponsable);
