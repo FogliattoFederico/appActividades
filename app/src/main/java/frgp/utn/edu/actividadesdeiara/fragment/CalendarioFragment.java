@@ -281,28 +281,69 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
     public void onActividadLongClick(Actividad actividad) {
         if (actividad == null || actividad.getId() == null) return;
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Eliminar Actividad")
-                .setMessage("¿Deseas eliminar la actividad '" + actividad.getTitulo() + "'?")
-                .setPositiveButton("Eliminar", (dialog, which) -> {
-                    db.collection("users")
-                            .document(currentUserId)
-                            .collection("actividades")
-                            .document(actividad.getId())
-                            .delete()
-                            .addOnSuccessListener(aVoid -> {
-                                if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Actividad eliminada", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnFailureListener(e -> {
-                                if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Error al eliminar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+        boolean esRepetida = actividad.getRepeatGroupId() != null && !actividad.getRepeatGroupId().trim().isEmpty();
+
+        if (esRepetida) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Actividad Repetida")
+                    .setMessage("La actividad '" + actividad.getTitulo() + "' forma parte de una serie. ¿Deseas eliminar únicamente esta instancia o toda la serie?")
+                    .setPositiveButton("Solo esta", (dialog, which) -> eliminarSoloEstaActividad(actividad))
+                    .setNeutralButton("Toda la serie", (dialog, which) -> eliminarTodaLaSerie(actividad))
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        } else {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Actividad")
+                    .setMessage("¿Deseas eliminar la actividad '" + actividad.getTitulo() + "'?")
+                    .setPositiveButton("Eliminar", (dialog, which) -> eliminarSoloEstaActividad(actividad))
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        }
+    }
+
+    private void eliminarSoloEstaActividad(Actividad actividad) {
+        if (actividad == null || actividad.getId() == null) return;
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .document(actividad.getId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(), "Actividad eliminada", Toast.LENGTH_SHORT).show();
+                    }
                 })
-                .setNegativeButton("Cancelar", null)
-                .show();
+                .addOnFailureListener(e -> {
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(), "Error al eliminar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void eliminarTodaLaSerie(Actividad actividad) {
+        if (actividad == null || actividad.getRepeatGroupId() == null) return;
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .whereEqualTo("repeatGroupId", actividad.getRepeatGroupId())
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                            doc.getReference().delete();
+                        }
+                    }
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(), "Toda la serie de actividades fue eliminada", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(), "Error al eliminar la serie: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override

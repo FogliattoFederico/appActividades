@@ -748,23 +748,60 @@ public class AddEditActividadActivity extends AppCompatActivity {
     private void confirmarEliminar() {
         if (actividadAEditar == null || actividadAEditar.getId() == null) return;
 
-        new AlertDialog.Builder(this)
-                .setTitle("Eliminar Actividad")
-                .setMessage("¿Estás seguro de que deseas eliminar esta actividad?")
-                .setPositiveButton("Eliminar", (dialog, which) -> {
-                    cancelarAlarmaNotificacion(actividadAEditar.getId());
-                    db.collection("users")
-                            .document(currentUserId)
-                            .collection("actividades")
-                            .document(actividadAEditar.getId())
-                            .delete()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Actividad eliminada", Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        boolean esRepetida = actividadAEditar.getRepeatGroupId() != null && !actividadAEditar.getRepeatGroupId().trim().isEmpty();
+
+        if (esRepetida) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Eliminar Actividad Repetida")
+                    .setMessage("Esta actividad forma parte de una serie. ¿Deseas eliminar únicamente esta instancia o toda la serie de eventos repetidos?")
+                    .setPositiveButton("Solo esta", (dialog, which) -> eliminarSoloEstaActividad())
+                    .setNeutralButton("Toda la serie", (dialog, which) -> eliminarTodaLaSerie())
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Eliminar Actividad")
+                    .setMessage("¿Estás seguro de que deseas eliminar esta actividad?")
+                    .setPositiveButton("Eliminar", (dialog, which) -> eliminarSoloEstaActividad())
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        }
+    }
+
+    private void eliminarSoloEstaActividad() {
+        if (actividadAEditar == null || actividadAEditar.getId() == null) return;
+        cancelarAlarmaNotificacion(actividadAEditar.getId());
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .document(actividadAEditar.getId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Actividad eliminada", Toast.LENGTH_SHORT).show();
+                    finish();
                 })
-                .setNegativeButton("Cancelar", null)
-                .show();
+                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void eliminarTodaLaSerie() {
+        if (actividadAEditar == null || actividadAEditar.getRepeatGroupId() == null) return;
+        String groupId = actividadAEditar.getRepeatGroupId();
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .whereEqualTo("repeatGroupId", groupId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            cancelarAlarmaNotificacion(doc.getId());
+                            doc.getReference().delete();
+                        }
+                    }
+                    Toast.makeText(this, "Toda la serie de actividades fue eliminada", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error al eliminar la serie: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
