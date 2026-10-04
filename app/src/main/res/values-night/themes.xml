@@ -1,7 +1,48 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme for Night mode. -->
     <style name="Base.Theme.ActividadesDeIara" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Color palette for Dark Mode -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_200</item>
+        <item name="colorOnPrimary">#1C1B1F</item>
+        <item name="colorSecondaryContainer">@color/purple_200</item>
+        <item name="colorOnSecondaryContainer">#FFFFFF</item>
+        <item name="android:statusBarColor">#1C1B1F</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="android:timePickerDialogTheme">@style/DialogTheme.ActividadesDeIara</item>
+        <item name="android:datePickerDialogTheme">@style/DialogTheme.ActividadesDeIara</item>
+
+        <!-- High contrast TextInputLayout defaults -->
+        <item name="textInputStyle">@style/Widget.ActividadesDeIara.TextInputLayout</item>
     </style>
+
+    <style name="DialogTheme.ActividadesDeIara" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorAccent">@color/purple_500</item>
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ActividadesDeIara.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ActividadesDeIara.DialogButton</item>
+    </style>
+
+    <style name="Widget.ActividadesDeIara.DialogButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/purple_500</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.ActividadesDeIara.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/purple_500</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="boxStrokeColor">@color/purple_500</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+    </style>
+
+    <style name="Theme.ActividadesDeIara" parent="Base.Theme.ActividadesDeIara" />
 </resources>

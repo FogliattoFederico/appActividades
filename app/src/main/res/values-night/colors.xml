@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF1C1B1F</color>
+
+    <!-- Semantic background & surface colors for Night Mode -->
+    <color name="app_background">#121212</color>
+    <color name="card_background">#1E1E1E</color>
+
+    <color name="purple_500">#D0BCFF</color>
+    <color name="purple_700">#D0BCFF</color>
+    <color name="purple_200">#4F378B</color>
+    <color name="purple_light_bg">#25232A</color>
+    <color name="teal_200">#03DAC5</color>
+
+    <!-- High-contrast category badge colors for Night Mode -->
+    <color name="cat_medico">#FFB4AB</color>
+    <color name="cat_medico_bg">#370001</color>
+
+    <color name="cat_profesional">#A8C7FA</color>
+    <color name="cat_profesional_bg">#001D35</color>
+
+    <color name="cat_docente">#E8B7D4</color>
+    <color name="cat_docente_bg">#31111D</color>
+
+    <color name="cat_fisica">#6DD58C</color>
+    <color name="cat_fisica_bg">#0A3818</color>
+
+    <!-- High contrast text & hint & divider colors for Night Mode -->
+    <color name="text_primary">#FFE6E1E5</color>
+    <color name="text_secondary">#FFCAC4D0</color>
+    <color name="text_hint">#FF938F96</color>
+    <color name="divider">#FF49454F</color>
+    <color name="box_stroke">#D0BCFF</color>
+</resources>

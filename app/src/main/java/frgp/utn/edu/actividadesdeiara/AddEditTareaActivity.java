@@ -299,6 +299,16 @@ public class AddEditTareaActivity extends AppCompatActivity {
             etFecha.setText(fechaSeleccionada);
         }, year, month, day);
 
+        dialog.setOnShowListener(d -> {
+            int colorBtn = ContextCompat.getColor(this, R.color.purple_500);
+            if (dialog.getButton(DatePickerDialog.BUTTON_POSITIVE) != null) {
+                dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(colorBtn);
+            }
+            if (dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE) != null) {
+                dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(colorBtn);
+            }
+        });
+
         dialog.show();
     }
 
@@ -323,6 +333,16 @@ public class AddEditTareaActivity extends AppCompatActivity {
             String horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d", h, m);
             etHorario.setText(horaSeleccionada);
         }, hour, minute, true);
+
+        dialog.setOnShowListener(d -> {
+            int colorBtn = ContextCompat.getColor(this, R.color.purple_500);
+            if (dialog.getButton(TimePickerDialog.BUTTON_POSITIVE) != null) {
+                dialog.getButton(TimePickerDialog.BUTTON_POSITIVE).setTextColor(colorBtn);
+            }
+            if (dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE) != null) {
+                dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE).setTextColor(colorBtn);
+            }
+        });
 
         dialog.show();
     }
