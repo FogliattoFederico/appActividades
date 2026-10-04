@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,7 +110,8 @@ public class AddEditActividadActivity extends AppCompatActivity {
         if (root != null) {
             ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, Math.max(systemBars.bottom, ime.bottom));
                 return insets;
             });
         }
@@ -228,6 +230,14 @@ public class AddEditActividadActivity extends AppCompatActivity {
         actvCantidadRecordatorios.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
         actvAnticipacionRecordatorio1.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
         actvAnticipacionRecordatorio2.setOnItemClickListener((parent, view, position, id) -> actualizarVisibilidadYTextoAviso());
+
+        if (etDescripcion != null) {
+            etDescripcion.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus && root instanceof ScrollView) {
+                    root.postDelayed(() -> ((ScrollView) root).smoothScrollTo(0, v.getBottom() + 200), 200);
+                }
+            });
+        }
 
         // Check if edit mode
         if (getIntent().hasExtra(EXTRA_ACTIVIDAD)) {
