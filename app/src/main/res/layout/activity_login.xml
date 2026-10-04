@@ -15,10 +15,10 @@
         android:padding="24dp">
 
         <ImageView
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:src="@drawable/ic_security"
-            app:tint="@color/purple_500" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_notebook_logo"
+            android:contentDescription="@string/app_name" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -7,11 +7,11 @@
     android:orientation="vertical"
     android:background="#F8F9FA">
 
-    <!-- Top Half: Rubros (weight = 1) -->
+    <!-- Top Half: Rubros (weight = 0.85) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.85"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -49,6 +49,8 @@
                 android:id="@+id/rvRubros"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
                 tools:listitem="@layout/item_rubro_card" />
 
             <LinearLayout
@@ -77,14 +79,13 @@
         android:layout_height="2dp"
         android:background="@color/divider" />
 
-    <!-- Bottom Half: Especialidades (weight = 1) -->
+    <!-- Bottom Half: Especialidades (weight = 1.15) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.15"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:paddingBottom="60dp">
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,6 +123,8 @@
                 android:id="@+id/rvEspecialidades"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="100dp"
                 tools:listitem="@layout/item_especialidad_card" />
 
             <LinearLayout
