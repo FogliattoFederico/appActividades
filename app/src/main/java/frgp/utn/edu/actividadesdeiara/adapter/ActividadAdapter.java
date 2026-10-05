@@ -65,6 +65,18 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             holder.tvResponsable.setVisibility(View.GONE);
         }
 
+        if (holder.tvLugarAtencion != null) {
+            if (actividad.isAtencionDomicilio()) {
+                holder.tvLugarAtencion.setText("🏡 Atención a Domicilio");
+                holder.tvLugarAtencion.setVisibility(View.VISIBLE);
+            } else if (actividad.getDireccionAtencion() != null && !actividad.getDireccionAtencion().trim().isEmpty()) {
+                holder.tvLugarAtencion.setText("📍 " + actividad.getDireccionAtencion().trim());
+                holder.tvLugarAtencion.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvLugarAtencion.setVisibility(View.GONE);
+            }
+        }
+
         if (actividad.getFecha() != null && !actividad.getFecha().trim().isEmpty()) {
             holder.tvFecha.setText(actividad.getFecha().trim());
             holder.tvFecha.setVisibility(View.VISIBLE);
@@ -179,6 +191,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         TextView tvCategory;
         TextView tvTitulo;
         TextView tvResponsable;
+        TextView tvLugarAtencion;
         TextView tvFecha;
         TextView tvHora;
         TextView tvDescripcion;
@@ -194,6 +207,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvResponsable = itemView.findViewById(R.id.tvResponsable);
+            tvLugarAtencion = itemView.findViewById(R.id.tvLugarAtencion);
             tvFecha = itemView.findViewById(R.id.tvFecha);
             tvHora = itemView.findViewById(R.id.tvHora);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);

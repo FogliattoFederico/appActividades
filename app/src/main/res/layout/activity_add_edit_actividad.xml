@@ -101,6 +101,34 @@
                 android:cursorVisible="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Switch Atención a Domicilio -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchAtencionDomicilioActividad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="🏡 Atención a Domicilio"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <!-- Dirección de Atención -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDireccionAtencionActividad"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Dirección / Lugar de atención">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDireccionAtencionActividad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:inputType="textPostalAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Date Field -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFecha"

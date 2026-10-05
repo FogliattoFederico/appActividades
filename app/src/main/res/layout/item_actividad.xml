@@ -91,6 +91,18 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
+        <!-- Lugar de Atención / Dirección -->
+        <TextView
+            android:id="@+id/tvLugarAtencion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/purple_700"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="📍 Av. Siempreviva 123" />
+
         <!-- Date & Time -->
         <LinearLayout
             android:layout_width="match_parent"

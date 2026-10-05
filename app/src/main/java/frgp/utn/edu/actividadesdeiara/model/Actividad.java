@@ -21,6 +21,8 @@ public class Actividad implements Serializable {
     private int minutosAnticipacion2 = 0; // Para recordatorio 2
     private long recordatorioTimeMillis;
     private long recordatorioTimeMillis2;
+    private boolean atencionDomicilio;
+    private String direccionAtencion;
     private String repeatGroupId;
     private String frecuenciaRepeticion; // "Único", "Semanal"
     private String userId;
@@ -207,5 +209,21 @@ public class Actividad implements Serializable {
 
     public void setFrecuenciaRepeticion(String frecuenciaRepeticion) {
         this.frecuenciaRepeticion = frecuenciaRepeticion;
+    }
+
+    public boolean isAtencionDomicilio() {
+        return atencionDomicilio;
+    }
+
+    public void setAtencionDomicilio(boolean atencionDomicilio) {
+        this.atencionDomicilio = atencionDomicilio;
+    }
+
+    public String getDireccionAtencion() {
+        return direccionAtencion;
+    }
+
+    public void setDireccionAtencion(String direccionAtencion) {
+        this.direccionAtencion = direccionAtencion;
     }
 }

@@ -87,11 +87,11 @@ public class AddEditActividadActivity extends AppCompatActivity {
     };
 
     private TextView tvFormTitle, tvAvisoRecordatorio;
-    private TextInputEditText etTitulo, etRubro, etEspecialidad, etFecha, etHora, etDescripcion;
-    private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2, tilRepeticion, tilDuracionRepeticion;
+    private TextInputEditText etTitulo, etRubro, etEspecialidad, etFecha, etHora, etDescripcion, etDireccionAtencion;
+    private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2, tilRepeticion, tilDuracionRepeticion, tilDireccionAtencion;
     private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2, actvRepeticion, actvDuracionRepeticion;
     private View llOpcionesRecordatorio;
-    private SwitchMaterial switchRecordatorio;
+    private SwitchMaterial switchRecordatorio, switchAtencionDomicilio;
     private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
@@ -141,6 +141,16 @@ public class AddEditActividadActivity extends AppCompatActivity {
         actvDuracionRepeticion = findViewById(R.id.actvDuracionRepeticionActividad);
 
         etDescripcion = findViewById(R.id.etDescripcion);
+        switchAtencionDomicilio = findViewById(R.id.switchAtencionDomicilioActividad);
+        tilDireccionAtencion = findViewById(R.id.tilDireccionAtencionActividad);
+        etDireccionAtencion = findViewById(R.id.etDireccionAtencionActividad);
+
+        if (switchAtencionDomicilio != null && tilDireccionAtencion != null) {
+            switchAtencionDomicilio.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                tilDireccionAtencion.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+            });
+        }
+
         switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
         llOpcionesRecordatorio = findViewById(R.id.llOpcionesRecordatorioActividad);
 
@@ -201,6 +211,17 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 Profesional p = listaProfesionales.get(position);
                 etRubro.setText(p.getRubro() != null ? p.getRubro() : "");
                 etEspecialidad.setText(p.getEspecialidad() != null ? p.getEspecialidad() : "");
+
+                boolean atencionDom = p.isAtencionDomicilio();
+                if (switchAtencionDomicilio != null) {
+                    switchAtencionDomicilio.setChecked(atencionDom);
+                }
+                if (tilDireccionAtencion != null) {
+                    tilDireccionAtencion.setVisibility(atencionDom ? View.GONE : View.VISIBLE);
+                }
+                if (etDireccionAtencion != null) {
+                    etDireccionAtencion.setText(!atencionDom && p.getDireccionAtencion() != null ? p.getDireccionAtencion() : "");
+                }
             }
         });
 
@@ -253,6 +274,16 @@ public class AddEditActividadActivity extends AppCompatActivity {
             etFecha.setText(actividadAEditar.getFecha());
             etHora.setText(actividadAEditar.getHora());
             etDescripcion.setText(actividadAEditar.getDescripcion());
+
+            if (switchAtencionDomicilio != null) {
+                switchAtencionDomicilio.setChecked(actividadAEditar.isAtencionDomicilio());
+            }
+            if (tilDireccionAtencion != null) {
+                tilDireccionAtencion.setVisibility(actividadAEditar.isAtencionDomicilio() ? View.GONE : View.VISIBLE);
+            }
+            if (etDireccionAtencion != null) {
+                etDireccionAtencion.setText(actividadAEditar.getDireccionAtencion() != null ? actividadAEditar.getDireccionAtencion() : "");
+            }
 
             boolean esSemanal = "Semanal".equalsIgnoreCase(actividadAEditar.getFrecuenciaRepeticion());
             actvRepeticion.setText(OPCIONES_FRECUENCIA_TEXTO[esSemanal ? 1 : 0], false);
@@ -653,6 +684,11 @@ public class AddEditActividadActivity extends AppCompatActivity {
         boolean completada = actividadAEditar != null && actividadAEditar.isCompletada();
         String categoria = !rubro.isEmpty() ? rubro : "Profesional";
 
+        boolean atencionDomicilio = switchAtencionDomicilio != null && switchAtencionDomicilio.isChecked();
+        String direccionAtencion = (!atencionDomicilio && etDireccionAtencion != null && etDireccionAtencion.getText() != null)
+                ? etDireccionAtencion.getText().toString().trim()
+                : "";
+
         boolean recordatorio = switchRecordatorio.isChecked();
         boolean esDoble = actvCantidadRecordatorios.getText() != null && actvCantidadRecordatorios.getText().toString().trim().startsWith("2");
         int cantidadRecordatorios = recordatorio ? (esDoble ? 2 : 1) : 0;
@@ -692,6 +728,8 @@ public class AddEditActividadActivity extends AppCompatActivity {
             );
             actividad.setRepeatGroupId(repeatGroupId);
             actividad.setFrecuenciaRepeticion(frecuencia);
+            actividad.setAtencionDomicilio(atencionDomicilio);
+            actividad.setDireccionAtencion(direccionAtencion);
 
             db.collection("users")
                     .document(currentUserId)
@@ -745,6 +783,8 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 );
                 actividad.setRepeatGroupId(repeatGroupId);
                 actividad.setFrecuenciaRepeticion(frecuencia);
+                actividad.setAtencionDomicilio(atencionDomicilio);
+                actividad.setDireccionAtencion(direccionAtencion);
 
                 db.collection("users")
                         .document(currentUserId)
