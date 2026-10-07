@@ -91,7 +91,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
     private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2, tilRepeticion, tilDuracionRepeticion, tilDireccionAtencion;
     private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2, actvRepeticion, actvDuracionRepeticion;
     private View llOpcionesRecordatorio;
-    private SwitchMaterial switchRecordatorio, switchAtencionDomicilio;
+    private SwitchMaterial switchRecordatorio, switchAtencionDomicilio, switchAbonada;
     private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
@@ -151,6 +151,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
             });
         }
 
+        switchAbonada = findViewById(R.id.switchAbonadaActividad);
         switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
         llOpcionesRecordatorio = findViewById(R.id.llOpcionesRecordatorioActividad);
 
@@ -283,6 +284,9 @@ public class AddEditActividadActivity extends AppCompatActivity {
             }
             if (etDireccionAtencion != null) {
                 etDireccionAtencion.setText(actividadAEditar.getDireccionAtencion() != null ? actividadAEditar.getDireccionAtencion() : "");
+            }
+            if (switchAbonada != null) {
+                switchAbonada.setChecked(actividadAEditar.isAbonada());
             }
 
             boolean esSemanal = "Semanal".equalsIgnoreCase(actividadAEditar.getFrecuenciaRepeticion());
@@ -688,6 +692,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
         String direccionAtencion = (!atencionDomicilio && etDireccionAtencion != null && etDireccionAtencion.getText() != null)
                 ? etDireccionAtencion.getText().toString().trim()
                 : "";
+        boolean abonada = switchAbonada != null && switchAbonada.isChecked();
 
         boolean recordatorio = switchRecordatorio.isChecked();
         boolean esDoble = actvCantidadRecordatorios.getText() != null && actvCantidadRecordatorios.getText().toString().trim().startsWith("2");
@@ -730,6 +735,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
             actividad.setFrecuenciaRepeticion(frecuencia);
             actividad.setAtencionDomicilio(atencionDomicilio);
             actividad.setDireccionAtencion(direccionAtencion);
+            actividad.setAbonada(abonada);
 
             db.collection("users")
                     .document(currentUserId)
@@ -785,6 +791,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 actividad.setFrecuenciaRepeticion(frecuencia);
                 actividad.setAtencionDomicilio(atencionDomicilio);
                 actividad.setDireccionAtencion(direccionAtencion);
+                actividad.setAbonada(abonada);
 
                 db.collection("users")
                         .document(currentUserId)

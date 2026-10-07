@@ -25,8 +25,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import frgp.utn.edu.actividadesdeiara.R;
@@ -125,6 +127,12 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                         }
                     }
 
+                    Collections.sort(listaRubros, (r1, r2) -> {
+                        String n1 = r1.getNombre() != null ? r1.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        String n2 = r2.getNombre() != null ? r2.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        return n1.compareTo(n2);
+                    });
+
                     rubroAdapter.setListaRubros(listaRubros);
                     boolean vacio = listaRubros.isEmpty();
                     llEmptyStateRubros.setVisibility(vacio ? View.VISIBLE : View.GONE);
@@ -187,6 +195,12 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                             listaEspecialidades.add(esp);
                         }
                     }
+
+                    Collections.sort(listaEspecialidades, (e1, e2) -> {
+                        String n1 = e1.getNombre() != null ? e1.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        String n2 = e2.getNombre() != null ? e2.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        return n1.compareTo(n2);
+                    });
 
                     especialidadAdapter.setListaEspecialidades(listaEspecialidades);
                     boolean sinEsp = listaEspecialidades.isEmpty();

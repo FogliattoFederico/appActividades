@@ -23,6 +23,7 @@ public class Actividad implements Serializable {
     private long recordatorioTimeMillis2;
     private boolean atencionDomicilio;
     private String direccionAtencion;
+    private boolean abonada; // Confirmación de pago / abonado
     private String repeatGroupId;
     private String frecuenciaRepeticion; // "Único", "Semanal"
     private String userId;
@@ -225,5 +226,13 @@ public class Actividad implements Serializable {
 
     public void setDireccionAtencion(String direccionAtencion) {
         this.direccionAtencion = direccionAtencion;
+    }
+
+    public boolean isAbonada() {
+        return abonada;
+    }
+
+    public void setAbonada(boolean abonada) {
+        this.abonada = abonada;
     }
 }

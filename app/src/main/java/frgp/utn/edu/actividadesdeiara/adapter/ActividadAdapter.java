@@ -1,9 +1,11 @@
 package frgp.utn.edu.actividadesdeiara.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -28,6 +31,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         void onActividadClick(Actividad actividad);
         void onActividadLongClick(Actividad actividad);
         void onCompletadaToggle(Actividad actividad, boolean isChecked);
+        void onAbonadaToggle(Actividad actividad, boolean isChecked);
     }
 
     private final Context context;
@@ -69,9 +73,14 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             if (actividad.isAtencionDomicilio()) {
                 holder.tvLugarAtencion.setText("🏡 Atención a Domicilio");
                 holder.tvLugarAtencion.setVisibility(View.VISIBLE);
+                holder.tvLugarAtencion.setOnClickListener(v ->
+                        Toast.makeText(context, "Atención agendada en domicilio", Toast.LENGTH_SHORT).show()
+                );
             } else if (actividad.getDireccionAtencion() != null && !actividad.getDireccionAtencion().trim().isEmpty()) {
-                holder.tvLugarAtencion.setText("📍 " + actividad.getDireccionAtencion().trim());
+                String direccion = actividad.getDireccionAtencion().trim();
+                holder.tvLugarAtencion.setText("📍 " + direccion + " (Abrir en Maps)");
                 holder.tvLugarAtencion.setVisibility(View.VISIBLE);
+                holder.tvLugarAtencion.setOnClickListener(v -> abrirGoogleMaps(direccion));
             } else {
                 holder.tvLugarAtencion.setVisibility(View.GONE);
             }
@@ -146,6 +155,17 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         badgeBg.setColor(bgColor);
         holder.llCategoryBadge.setBackground(badgeBg);
 
+        // Payment / Abonada checkbox
+        if (holder.cbAbonada != null) {
+            holder.cbAbonada.setOnCheckedChangeListener(null);
+            holder.cbAbonada.setChecked(actividad.isAbonada());
+            holder.cbAbonada.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (listener != null) {
+                    listener.onAbonadaToggle(actividad, isChecked);
+                }
+            });
+        }
+
         // Completion checkbox
         holder.cbCompletada.setOnCheckedChangeListener(null);
         holder.cbCompletada.setChecked(actividad.isCompletada());
@@ -176,6 +196,26 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         });
     }
 
+    private void abrirGoogleMaps(String direccion) {
+        if (direccion == null || direccion.trim().isEmpty()) return;
+        try {
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(direccion));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(mapIntent);
+            } else {
+                Intent genericMapIntent = new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(direccion))
+                );
+                context.startActivity(genericMapIntent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "No se pudo abrir mapas: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public int getItemCount() {
         return listaActividades.size();
@@ -196,6 +236,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         TextView tvHora;
         TextView tvDescripcion;
         CheckBox cbCompletada;
+        CheckBox cbAbonada;
 
         public ActividadViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -212,6 +253,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             tvHora = itemView.findViewById(R.id.tvHora);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
             cbCompletada = itemView.findViewById(R.id.cbCompletada);
+            cbAbonada = itemView.findViewById(R.id.cbAbonada);
         }
     }
 }

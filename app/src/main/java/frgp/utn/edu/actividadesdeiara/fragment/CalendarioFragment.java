@@ -359,4 +359,24 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
                 .update("completada", isChecked)
                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error al actualizar estado", Toast.LENGTH_SHORT).show());
     }
+
+    @Override
+    public void onAbonadaToggle(Actividad actividad, boolean isChecked) {
+        if (actividad == null || actividad.getId() == null) return;
+
+        actividad.setAbonada(isChecked);
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .document(actividad.getId())
+                .update("abonada", isChecked)
+                .addOnSuccessListener(aVoid -> {
+                    if (isAdded()) {
+                        String msj = isChecked ? "Sesión / Consulta marcada como abonada 💳" : "Marca de abonado eliminada";
+                        Toast.makeText(requireContext(), msj, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error al actualizar pago: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
 }

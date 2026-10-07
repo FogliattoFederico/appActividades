@@ -24,7 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.model.Profesional;
 import frgp.utn.edu.actividadesdeiara.model.Rubro;
@@ -169,13 +171,22 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     listaRubros.clear();
-                    List<String> nombres = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
                         Rubro rubro = doc.toObject(Rubro.class);
                         rubro.setId(doc.getId());
                         listaRubros.add(rubro);
-                        nombres.add(rubro.getNombre());
+                    }
+
+                    Collections.sort(listaRubros, (r1, r2) -> {
+                        String n1 = r1.getNombre() != null ? r1.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        String n2 = r2.getNombre() != null ? r2.getNombre().toLowerCase(Locale.getDefault()) : "";
+                        return n1.compareTo(n2);
+                    });
+
+                    List<String> nombres = new ArrayList<>();
+                    for (Rubro r : listaRubros) {
+                        nombres.add(r.getNombre());
                     }
 
                     adapterRubros = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, nombres);
@@ -213,6 +224,8 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                         String nombre = doc.getString("nombre");
                         if (nombre != null) nombres.add(nombre);
                     }
+
+                    Collections.sort(nombres, (s1, s2) -> s1.toLowerCase(Locale.getDefault()).compareTo(s2.toLowerCase(Locale.getDefault())));
 
                     adapterEspecialidades = new ArrayAdapter<>(this, R.layout.item_spinner_dropdown, nombres);
                     actvEspecialidad.setAdapter(adapterEspecialidades);
