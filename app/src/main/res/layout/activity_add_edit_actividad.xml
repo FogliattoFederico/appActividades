@@ -63,14 +63,14 @@
                 android:clickable="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Rubro (Autocompletado) -->
+        <!-- Rubro -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilRubro"
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Rubro (autocompletado)">
+            android:hint="Rubro">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etRubro"
@@ -82,14 +82,14 @@
                 android:cursorVisible="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Especialidad (Autocompletada) -->
+        <!-- Especialidad -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEspecialidad"
             style="@style/Widget.ActividadesDeIara.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Especialidad (autocompletada)">
+            android:hint="Especialidad">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEspecialidad"
@@ -110,7 +110,8 @@
             android:text="🏡 Atención a Domicilio"
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:enabled="false" />
 
         <!-- Dirección de Atención -->
         <com.google.android.material.textfield.TextInputLayout
@@ -126,7 +127,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:inputType="textPostalAddress" />
+                android:focusable="false"
+                android:clickable="false"
+                android:cursorVisible="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Date Field -->

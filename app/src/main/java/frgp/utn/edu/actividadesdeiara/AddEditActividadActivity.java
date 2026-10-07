@@ -146,10 +146,13 @@ public class AddEditActividadActivity extends AppCompatActivity {
         tilDireccionAtencion = findViewById(R.id.tilDireccionAtencionActividad);
         etDireccionAtencion = findViewById(R.id.etDireccionAtencionActividad);
 
-        if (switchAtencionDomicilio != null && tilDireccionAtencion != null) {
-            switchAtencionDomicilio.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                tilDireccionAtencion.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-            });
+        if (switchAtencionDomicilio != null) {
+            switchAtencionDomicilio.setEnabled(false);
+        }
+        if (etDireccionAtencion != null) {
+            etDireccionAtencion.setFocusable(false);
+            etDireccionAtencion.setClickable(false);
+            etDireccionAtencion.setCursorVisible(false);
         }
 
         switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
