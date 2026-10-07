@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Bloquear acceso global por defecto
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reglas de aislamiento por usuario para la app Mi Agendita:
+    // Un usuario autenticado únicamente puede leer y modificar sus propios datos
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Subcolección de Tareas
+      match /tareas/{tareaId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Subcolección de Actividades
+      match /actividades/{actividadId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Subcolección de Profesionales
+      match /profesionales/{profesionalId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Subcolección de Rubros y Especialidades
+      match /rubros/{rubroId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+
+        match /especialidades/{especialidadId} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+    }
+  }
+}
