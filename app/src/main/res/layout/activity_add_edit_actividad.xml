@@ -164,7 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Hora (ej: 15:30)"
+            android:hint="Hora (ej: 15:30) *"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_time"
             app:endIconTint="@color/purple_500">

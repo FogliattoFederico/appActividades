@@ -548,6 +548,12 @@ public class AddEditActividadActivity extends AppCompatActivity {
             return;
         }
 
+        if (TextUtils.isEmpty(hora)) {
+            etHora.setError("Seleccione la hora de la actividad");
+            Toast.makeText(this, "Debe ingresar el horario de la actividad", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         boolean esSemanal = actvRepeticion.getText() != null && actvRepeticion.getText().toString().trim().startsWith("Se repite");
         int semanasDuracion = esSemanal ? obtenerSemanasDuracionActual() : 1;
 
