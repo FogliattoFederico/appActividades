@@ -290,6 +290,13 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                     String nombre = input.getText().toString().trim();
                     if (nombre.isEmpty()) return;
 
+                    for (Rubro r : listaRubros) {
+                        if (r.getNombre() != null && r.getNombre().trim().equalsIgnoreCase(nombre)) {
+                            Toast.makeText(requireContext(), "El rubro '" + nombre + "' ya existe.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+
                     Map<String, Object> datos = new HashMap<>();
                     datos.put("nombre", nombre);
 
@@ -318,6 +325,13 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                 .setPositiveButton("Guardar", (dialog, which) -> {
                     String nuevoNombre = input.getText().toString().trim();
                     if (nuevoNombre.isEmpty()) return;
+
+                    for (Rubro r : listaRubros) {
+                        if (r.getId() != null && !r.getId().equals(rubro.getId()) && r.getNombre() != null && r.getNombre().trim().equalsIgnoreCase(nuevoNombre)) {
+                            Toast.makeText(requireContext(), "Ya existe un rubro llamado '" + nuevoNombre + "'.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
 
                     db.collection("users")
                             .document(currentUserId)
@@ -376,6 +390,13 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                     String nombre = input.getText().toString().trim();
                     if (nombre.isEmpty()) return;
 
+                    for (Especialidad esp : listaEspecialidades) {
+                        if (esp.getNombre() != null && esp.getNombre().trim().equalsIgnoreCase(nombre)) {
+                            Toast.makeText(requireContext(), "La especialidad '" + nombre + "' ya existe en " + rubro.getNombre() + ".", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+
                     Map<String, Object> datos = new HashMap<>();
                     datos.put("nombre", nombre);
 
@@ -406,6 +427,13 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                 .setPositiveButton("Guardar", (dialog, which) -> {
                     String nuevoNombre = input.getText().toString().trim();
                     if (nuevoNombre.isEmpty()) return;
+
+                    for (Especialidad esp : listaEspecialidades) {
+                        if (esp.getId() != null && !esp.getId().equals(especialidad.getId()) && esp.getNombre() != null && esp.getNombre().trim().equalsIgnoreCase(nuevoNombre)) {
+                            Toast.makeText(requireContext(), "Ya existe una especialidad llamada '" + nuevoNombre + "' en " + rubro.getNombre() + ".", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
 
                     db.collection("users")
                             .document(currentUserId)

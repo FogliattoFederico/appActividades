@@ -1,7 +1,6 @@
 package frgp.utn.edu.actividadesdeiara.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,13 +68,13 @@ public class RubroAdapter extends RecyclerView.Adapter<RubroAdapter.RubroViewHol
         if (seleccionado) {
             holder.mcvRubro.setStrokeColor(ContextCompat.getColor(context, R.color.purple_500));
             holder.mcvRubro.setStrokeWidth(4);
-            holder.mcvRubro.setCardBackgroundColor(ContextCompat.getColor(context, R.color.cat_docente_bg));
-            holder.tvNombre.setTextColor(ContextCompat.getColor(context, R.color.purple_700));
+            holder.mcvRubro.setCardBackgroundColor(ContextCompat.getColor(context, R.color.purple_light_bg));
+            holder.tvNombre.setTextColor(ContextCompat.getColor(context, R.color.purple_500));
         } else {
             holder.mcvRubro.setStrokeColor(ContextCompat.getColor(context, R.color.divider));
             holder.mcvRubro.setStrokeWidth(2);
-            holder.mcvRubro.setCardBackgroundColor(Color.WHITE);
-            holder.tvNombre.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.mcvRubro.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_background));
+            holder.tvNombre.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
         }
 
         holder.itemView.setOnClickListener(v -> {
