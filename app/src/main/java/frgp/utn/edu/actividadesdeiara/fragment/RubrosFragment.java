@@ -337,6 +337,7 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                 .setTitle("Modificar nombre de rubro")
                 .setView(input)
                 .setPositiveButton("Guardar", (dialog, which) -> {
+                    String nombreAnterior = rubro.getNombre();
                     String nuevoNombre = input.getText().toString().trim();
                     if (nuevoNombre.isEmpty()) return;
 
@@ -353,8 +354,11 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                             .document(rubro.getId())
                             .update("nombre", nuevoNombre)
                             .addOnSuccessListener(unused -> {
+                                if (nombreAnterior != null && !nombreAnterior.equals(nuevoNombre)) {
+                                    cascadaActualizarRubro(nombreAnterior, nuevoNombre);
+                                }
                                 if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Rubro modificado", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Rubro y elementos asociados modificados", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(e -> {
@@ -439,6 +443,7 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                 .setTitle("Modificar especialidad")
                 .setView(input)
                 .setPositiveButton("Guardar", (dialog, which) -> {
+                    String nombreAnterior = especialidad.getNombre();
                     String nuevoNombre = input.getText().toString().trim();
                     if (nuevoNombre.isEmpty()) return;
 
@@ -457,8 +462,11 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                             .document(especialidad.getId())
                             .update("nombre", nuevoNombre)
                             .addOnSuccessListener(unused -> {
+                                if (nombreAnterior != null && !nombreAnterior.equals(nuevoNombre)) {
+                                    cascadaActualizarEspecialidad(nombreAnterior, nuevoNombre);
+                                }
                                 if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Especialidad modificada", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Especialidad y elementos asociados modificados", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(e -> {
@@ -469,6 +477,70 @@ public class RubrosFragment extends Fragment implements RubroAdapter.OnRubroClic
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
+    }
+
+    private void cascadaActualizarRubro(String nombreAnterior, String nuevoNombre) {
+        if (currentUserId == null || nombreAnterior == null || nuevoNombre == null) return;
+
+        // 1. Actualizar Profesionales con ese rubro
+        db.collection("users")
+                .document(currentUserId)
+                .collection("profesionales")
+                .whereEqualTo("rubro", nombreAnterior)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            doc.getReference().update("rubro", nuevoNombre);
+                        }
+                    }
+                });
+
+        // 2. Actualizar Actividades con ese rubro/categoría
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .whereEqualTo("rubro", nombreAnterior)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            doc.getReference().update("rubro", nuevoNombre, "categoria", nuevoNombre);
+                        }
+                    }
+                });
+    }
+
+    private void cascadaActualizarEspecialidad(String nombreAnterior, String nuevoNombre) {
+        if (currentUserId == null || nombreAnterior == null || nuevoNombre == null) return;
+
+        // 1. Actualizar Profesionales con esa especialidad
+        db.collection("users")
+                .document(currentUserId)
+                .collection("profesionales")
+                .whereEqualTo("especialidad", nombreAnterior)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            doc.getReference().update("especialidad", nuevoNombre);
+                        }
+                    }
+                });
+
+        // 2. Actualizar Actividades con esa especialidad
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .whereEqualTo("especialidad", nombreAnterior)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            doc.getReference().update("especialidad", nuevoNombre);
+                        }
+                    }
+                });
     }
 
     @Override

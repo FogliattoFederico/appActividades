@@ -28,8 +28,10 @@
             <!-- Category Badge -->
             <LinearLayout
                 android:id="@+id/llCategoryBadge"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
@@ -52,33 +54,33 @@
                     android:text="Médico"
                     android:textColor="@color/cat_medico"
                     android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true" />
             </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
 
             <!-- CheckBox Abonada -->
             <CheckBox
                 android:id="@+id/cbAbonada"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="1dp"
                 android:text="💳 Abonada"
                 android:textColor="@color/cat_fisica"
-                android:textStyle="bold"
-                android:textSize="12sp" />
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <!-- CheckBox Completada -->
             <CheckBox
                 android:id="@+id/cbCompletada"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="2dp"
+                android:paddingHorizontal="1dp"
                 android:text="Completada"
                 android:textColor="@color/text_primary"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- Title -->
@@ -169,7 +171,7 @@
                 android:layout_height="16dp"
                 android:layout_marginStart="14dp"
                 android:src="@drawable/ic_notifications"
-                app:tint="@color/cat_medico"
+                app:tint="@color/purple_500"
                 android:visibility="gone"
                 android:contentDescription="Recordatorio activo" />
         </LinearLayout>

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.R;
 import frgp.utn.edu.actividadesdeiara.model.Actividad;
@@ -116,44 +117,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         }
 
         // Category Styling
-        String cat = actividad.getCategoria() != null ? actividad.getCategoria() : "Médico";
-        holder.tvCategory.setText(cat);
-        int textColor;
-        int bgColor;
-        int iconRes;
-
-        switch (cat) {
-            case "Profesional":
-                textColor = ContextCompat.getColor(context, R.color.cat_profesional);
-                bgColor = ContextCompat.getColor(context, R.color.cat_profesional_bg);
-                iconRes = R.drawable.ic_professional;
-                break;
-            case "Docente":
-                textColor = ContextCompat.getColor(context, R.color.cat_docente);
-                bgColor = ContextCompat.getColor(context, R.color.cat_docente_bg);
-                iconRes = R.drawable.ic_school;
-                break;
-            case "Actividad Física":
-                textColor = ContextCompat.getColor(context, R.color.cat_fisica);
-                bgColor = ContextCompat.getColor(context, R.color.cat_fisica_bg);
-                iconRes = R.drawable.ic_fitness;
-                break;
-            case "Médico":
-            default:
-                textColor = ContextCompat.getColor(context, R.color.cat_medico);
-                bgColor = ContextCompat.getColor(context, R.color.cat_medico_bg);
-                iconRes = R.drawable.ic_medical;
-                break;
-        }
-
-        holder.tvCategory.setTextColor(textColor);
-        holder.ivCategoryIcon.setImageResource(iconRes);
-        holder.ivCategoryIcon.setImageTintList(ColorStateList.valueOf(textColor));
-
-        GradientDrawable badgeBg = new GradientDrawable();
-        badgeBg.setCornerRadius(16f);
-        badgeBg.setColor(bgColor);
-        holder.llCategoryBadge.setBackground(badgeBg);
+        aplicarEstiloCategoria(holder, actividad);
 
         // Payment / Abonada checkbox
         if (holder.cbAbonada != null) {
@@ -194,6 +158,58 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             }
             return true;
         });
+    }
+
+    private void aplicarEstiloCategoria(ActividadViewHolder holder, Actividad actividad) {
+        String cat = actividad.getCategoria() != null ? actividad.getCategoria().trim().toLowerCase(Locale.getDefault()) : "";
+        String rubro = actividad.getRubro() != null ? actividad.getRubro().trim().toLowerCase(Locale.getDefault()) : "";
+
+        String textoMostrar = (actividad.getRubro() != null && !actividad.getRubro().trim().isEmpty())
+                ? actividad.getRubro().trim()
+                : ((actividad.getCategoria() != null && !actividad.getCategoria().trim().isEmpty()) ? actividad.getCategoria().trim() : "Médico");
+
+        holder.tvCategory.setText(textoMostrar);
+
+        int textColor;
+        int bgColor;
+        int iconRes;
+
+        if (cat.contains("física") || cat.contains("fisica") || cat.contains("deport") || cat.contains("gym") || cat.contains("gimnas") || cat.contains("entren") ||
+            cat.contains("kinesi") || cat.contains("pilates") || cat.contains("yoga") || cat.contains("natac") || cat.contains("fisiot") || cat.contains("rehabilit") ||
+            cat.contains("futbol") || cat.contains("fútbol") || cat.contains("padel") || cat.contains("tenis") || cat.contains("zumba") || cat.contains("spin") || cat.contains("crossfit") ||
+            cat.contains("baile") || cat.contains("danza") || cat.contains("run") || cat.contains("caminat") || cat.contains("musculac") ||
+            rubro.contains("física") || rubro.contains("fisica") || rubro.contains("deport") || rubro.contains("gym") || rubro.contains("gimnas") || rubro.contains("entren") ||
+            rubro.contains("kinesi") || rubro.contains("pilates") || rubro.contains("yoga") || rubro.contains("natac") || rubro.contains("fisiot") || rubro.contains("rehabilit") ||
+            rubro.contains("futbol") || rubro.contains("fútbol") || rubro.contains("padel") || rubro.contains("tenis") || rubro.contains("zumba") || rubro.contains("spin") || rubro.contains("crossfit") ||
+            rubro.contains("baile") || rubro.contains("danza") || rubro.contains("run") || rubro.contains("caminat") || rubro.contains("musculac")) {
+            textColor = ContextCompat.getColor(context, R.color.cat_fisica);
+            bgColor = ContextCompat.getColor(context, R.color.cat_fisica_bg);
+            iconRes = R.drawable.ic_fitness;
+        } else if (cat.contains("docente") || cat.contains("escuela") || cat.contains("estudio") || cat.contains("profesor") || cat.contains("curso") || cat.contains("clase") ||
+                   rubro.contains("docente") || rubro.contains("escuela") || rubro.contains("estudio") || rubro.contains("profesor") || rubro.contains("curso") || rubro.contains("clase")) {
+            textColor = ContextCompat.getColor(context, R.color.cat_docente);
+            bgColor = ContextCompat.getColor(context, R.color.cat_docente_bg);
+            iconRes = R.drawable.ic_school;
+        } else if (cat.contains("profesional") || cat.contains("abogad") || cat.contains("contador") || cat.contains("psicolog") || cat.contains("trabajo") || cat.contains("tramite") ||
+                   rubro.contains("profesional") || rubro.contains("abogad") || rubro.contains("contador") || rubro.contains("psicolog") || rubro.contains("trabajo") || rubro.contains("tramite")) {
+            textColor = ContextCompat.getColor(context, R.color.cat_profesional);
+            bgColor = ContextCompat.getColor(context, R.color.cat_profesional_bg);
+            iconRes = R.drawable.ic_professional;
+        } else {
+            // Médico / Salud / Default
+            textColor = ContextCompat.getColor(context, R.color.cat_medico);
+            bgColor = ContextCompat.getColor(context, R.color.cat_medico_bg);
+            iconRes = R.drawable.ic_medical;
+        }
+
+        holder.tvCategory.setTextColor(textColor);
+        holder.ivCategoryIcon.setImageResource(iconRes);
+        holder.ivCategoryIcon.setImageTintList(ColorStateList.valueOf(textColor));
+
+        GradientDrawable badgeBg = new GradientDrawable();
+        badgeBg.setCornerRadius(16f);
+        badgeBg.setColor(bgColor);
+        holder.llCategoryBadge.setBackground(badgeBg);
     }
 
     private void abrirGoogleMaps(String direccion) {
