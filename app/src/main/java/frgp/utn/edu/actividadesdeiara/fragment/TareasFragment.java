@@ -179,6 +179,12 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
                 .collection("tareas")
                 .document(tarea.getId())
                 .update("completada", isChecked)
+                .addOnSuccessListener(aVoid -> {
+                    if (isAdded()) {
+                        String msj = isChecked ? "Tarea marcada como realizada ✓" : "Tarea marcada como pendiente";
+                        Toast.makeText(requireContext(), msj, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .addOnFailureListener(e -> {
                     if (isAdded()) {
                         Toast.makeText(requireContext(), "Error al actualizar tarea", Toast.LENGTH_SHORT).show();

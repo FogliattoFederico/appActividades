@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -114,6 +115,17 @@ public class ProfesionalesFragment extends Fragment implements ProfesionalAdapte
                             }
                         }
                     }
+
+                    Collections.sort(listaTodosProfesionales, (p1, p2) -> {
+                        String a1 = p1.getApellido() != null ? p1.getApellido().toLowerCase(Locale.getDefault()) : "";
+                        String a2 = p2.getApellido() != null ? p2.getApellido().toLowerCase(Locale.getDefault()) : "";
+                        if (a1.equals(a2)) {
+                            String n1 = p1.getNombre() != null ? p1.getNombre().toLowerCase(Locale.getDefault()) : "";
+                            String n2 = p2.getNombre() != null ? p2.getNombre().toLowerCase(Locale.getDefault()) : "";
+                            return n1.compareTo(n2);
+                        }
+                        return a1.compareTo(a2);
+                    });
 
                     filtrarLista(textoBusquedaActual);
                 });

@@ -38,6 +38,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -91,7 +92,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
     private TextInputLayout tilProfesional, tilFecha, tilHora, tilCantidadRecordatorios, tilAnticipacionRecordatorio1, tilAnticipacionRecordatorio2, tilRepeticion, tilDuracionRepeticion, tilDireccionAtencion;
     private AutoCompleteTextView actvProfesional, actvCantidadRecordatorios, actvAnticipacionRecordatorio1, actvAnticipacionRecordatorio2, actvRepeticion, actvDuracionRepeticion;
     private View llOpcionesRecordatorio;
-    private SwitchMaterial switchRecordatorio, switchAtencionDomicilio, switchAbonada;
+    private SwitchMaterial switchRecordatorio, switchAtencionDomicilio;
     private MaterialButton btnGuardar, btnEliminar;
 
     private FirebaseFirestore db;
@@ -151,7 +152,6 @@ public class AddEditActividadActivity extends AppCompatActivity {
             });
         }
 
-        switchAbonada = findViewById(R.id.switchAbonadaActividad);
         switchRecordatorio = findViewById(R.id.switchRecordatorioActividad);
         llOpcionesRecordatorio = findViewById(R.id.llOpcionesRecordatorioActividad);
 
@@ -285,9 +285,6 @@ public class AddEditActividadActivity extends AppCompatActivity {
             if (etDireccionAtencion != null) {
                 etDireccionAtencion.setText(actividadAEditar.getDireccionAtencion() != null ? actividadAEditar.getDireccionAtencion() : "");
             }
-            if (switchAbonada != null) {
-                switchAbonada.setChecked(actividadAEditar.isAbonada());
-            }
 
             boolean esSemanal = "Semanal".equalsIgnoreCase(actividadAEditar.getFrecuenciaRepeticion());
             actvRepeticion.setText(OPCIONES_FRECUENCIA_TEXTO[esSemanal ? 1 : 0], false);
@@ -383,13 +380,26 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     listaProfesionales.clear();
-                    List<String> nombres = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
                         Profesional p = doc.toObject(Profesional.class);
                         p.setId(doc.getId());
                         listaProfesionales.add(p);
+                    }
 
+                    Collections.sort(listaProfesionales, (p1, p2) -> {
+                        String a1 = p1.getApellido() != null ? p1.getApellido().toLowerCase(Locale.getDefault()) : "";
+                        String a2 = p2.getApellido() != null ? p2.getApellido().toLowerCase(Locale.getDefault()) : "";
+                        if (a1.equals(a2)) {
+                            String n1 = p1.getNombre() != null ? p1.getNombre().toLowerCase(Locale.getDefault()) : "";
+                            String n2 = p2.getNombre() != null ? p2.getNombre().toLowerCase(Locale.getDefault()) : "";
+                            return n1.compareTo(n2);
+                        }
+                        return a1.compareTo(a2);
+                    });
+
+                    List<String> nombres = new ArrayList<>();
+                    for (Profesional p : listaProfesionales) {
                         String apellido = p.getApellido() != null ? p.getApellido().trim() : "";
                         String nombre = p.getNombre() != null ? p.getNombre().trim() : "";
                         String nombreCompleto = (!apellido.isEmpty() && !nombre.isEmpty()) ? (apellido + ", " + nombre) : (!apellido.isEmpty() ? apellido : nombre);
@@ -686,13 +696,13 @@ public class AddEditActividadActivity extends AppCompatActivity {
 
     private void ejecutarGuardadoSerie(String titulo, String rubro, String especialidad, List<String> fechas, String hora, String responsable, String descripcion, boolean esSemanal) {
         boolean completada = actividadAEditar != null && actividadAEditar.isCompletada();
+        boolean abonada = actividadAEditar != null && actividadAEditar.isAbonada();
         String categoria = !rubro.isEmpty() ? rubro : "Profesional";
 
         boolean atencionDomicilio = switchAtencionDomicilio != null && switchAtencionDomicilio.isChecked();
         String direccionAtencion = (!atencionDomicilio && etDireccionAtencion != null && etDireccionAtencion.getText() != null)
                 ? etDireccionAtencion.getText().toString().trim()
                 : "";
-        boolean abonada = switchAbonada != null && switchAbonada.isChecked();
 
         boolean recordatorio = switchRecordatorio.isChecked();
         boolean esDoble = actvCantidadRecordatorios.getText() != null && actvCantidadRecordatorios.getText().toString().trim().startsWith("2");

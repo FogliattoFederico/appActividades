@@ -357,6 +357,12 @@ public class CalendarioFragment extends Fragment implements ActividadAdapter.OnA
                 .collection("actividades")
                 .document(actividad.getId())
                 .update("completada", isChecked)
+                .addOnSuccessListener(aVoid -> {
+                    if (isAdded()) {
+                        String msj = isChecked ? "Actividad marcada como completada ✓" : "Actividad marcada como pendiente";
+                        Toast.makeText(requireContext(), msj, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error al actualizar estado", Toast.LENGTH_SHORT).show());
     }
 
