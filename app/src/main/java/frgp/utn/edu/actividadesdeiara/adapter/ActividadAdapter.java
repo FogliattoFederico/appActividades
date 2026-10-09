@@ -186,12 +186,14 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             bgColor = ContextCompat.getColor(context, R.color.cat_fisica_bg);
             iconRes = R.drawable.ic_fitness;
         } else if (cat.contains("docente") || cat.contains("escuela") || cat.contains("estudio") || cat.contains("profesor") || cat.contains("curso") || cat.contains("clase") ||
-                   rubro.contains("docente") || rubro.contains("escuela") || rubro.contains("estudio") || rubro.contains("profesor") || rubro.contains("curso") || rubro.contains("clase")) {
+                   cat.contains("educac") || cat.contains("pedag") || cat.contains("colegio") || cat.contains("universid") || cat.contains("facultad") || cat.contains("capacit") || cat.contains("taller") ||
+                   rubro.contains("docente") || rubro.contains("escuela") || rubro.contains("estudio") || rubro.contains("profesor") || rubro.contains("curso") || rubro.contains("clase") ||
+                   rubro.contains("educac") || rubro.contains("pedag") || rubro.contains("colegio") || rubro.contains("universid") || rubro.contains("facultad") || rubro.contains("capacit") || rubro.contains("taller")) {
             textColor = ContextCompat.getColor(context, R.color.cat_docente);
             bgColor = ContextCompat.getColor(context, R.color.cat_docente_bg);
             iconRes = R.drawable.ic_school;
-        } else if (cat.contains("profesional") || cat.contains("abogad") || cat.contains("contador") || cat.contains("psicolog") || cat.contains("trabajo") || cat.contains("tramite") ||
-                   rubro.contains("profesional") || rubro.contains("abogad") || rubro.contains("contador") || rubro.contains("psicolog") || rubro.contains("trabajo") || rubro.contains("tramite")) {
+        } else if (cat.contains("profesional") || cat.contains("abogad") || cat.contains("contador") || cat.contains("psicolog") || cat.contains("trabajo") || cat.contains("tramite") || cat.contains("trámite") || cat.contains("reunion") || cat.contains("reunión") || cat.contains("cliente") || cat.contains("asesor") ||
+                   rubro.contains("profesional") || rubro.contains("abogad") || rubro.contains("contador") || rubro.contains("psicolog") || rubro.contains("trabajo") || rubro.contains("tramite") || rubro.contains("trámite") || rubro.contains("reunion") || rubro.contains("reunión") || rubro.contains("cliente") || rubro.contains("asesor")) {
             textColor = ContextCompat.getColor(context, R.color.cat_profesional);
             bgColor = ContextCompat.getColor(context, R.color.cat_profesional_bg);
             iconRes = R.drawable.ic_professional;
