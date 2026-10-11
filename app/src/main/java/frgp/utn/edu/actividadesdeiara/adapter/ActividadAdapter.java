@@ -174,7 +174,12 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
         int bgColor;
         int iconRes;
 
-        if (cat.contains("física") || cat.contains("fisica") || cat.contains("deport") || cat.contains("gym") || cat.contains("gimnas") || cat.contains("entren") ||
+        if (cat.contains("arte") || cat.contains("artístic") || cat.contains("artistico") || cat.contains("pintur") || cat.contains("canto") || cat.contains("música") || cat.contains("musica") || cat.contains("teatro") || cat.contains("dibujo") || cat.contains("escultura") || cat.contains("manualidad") || cat.contains("fotograf") || cat.contains("diseño") || cat.contains("guitarr") || cat.contains("piano") || cat.contains("coro") ||
+            rubro.contains("arte") || rubro.contains("artístic") || rubro.contains("artistico") || rubro.contains("pintur") || rubro.contains("canto") || rubro.contains("música") || rubro.contains("musica") || rubro.contains("teatro") || rubro.contains("dibujo") || rubro.contains("escultura") || rubro.contains("manualidad") || rubro.contains("fotograf") || rubro.contains("diseño") || rubro.contains("guitarr") || rubro.contains("piano") || rubro.contains("coro")) {
+            textColor = ContextCompat.getColor(context, R.color.cat_arte);
+            bgColor = ContextCompat.getColor(context, R.color.cat_arte_bg);
+            iconRes = R.drawable.ic_art;
+        } else if (cat.contains("física") || cat.contains("fisica") || cat.contains("deport") || cat.contains("gym") || cat.contains("gimnas") || cat.contains("entren") ||
             cat.contains("kinesi") || cat.contains("pilates") || cat.contains("yoga") || cat.contains("natac") || cat.contains("fisiot") || cat.contains("rehabilit") ||
             cat.contains("futbol") || cat.contains("fútbol") || cat.contains("padel") || cat.contains("tenis") || cat.contains("zumba") || cat.contains("spin") || cat.contains("crossfit") ||
             cat.contains("baile") || cat.contains("danza") || cat.contains("run") || cat.contains("caminat") || cat.contains("musculac") ||

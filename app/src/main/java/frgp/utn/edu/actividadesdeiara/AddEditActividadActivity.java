@@ -876,7 +876,10 @@ public class AddEditActividadActivity extends AppCompatActivity {
                     Toast.makeText(this, "Actividad eliminada", Toast.LENGTH_SHORT).show();
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    btnGuardar.setEnabled(true);
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void eliminarTodaLaSerie() {
