@@ -22,8 +22,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.AddEditTareaActivity;
 import frgp.utn.edu.actividadesdeiara.R;
@@ -120,6 +124,9 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
             }
         }
 
+        Collections.sort(listaPendientes, this::compararTareasPorFechaYHora);
+        Collections.sort(listaRealizadas, this::compararTareasPorFechaYHora);
+
         adapterPendientes.setListaTareas(listaPendientes);
         adapterRealizadas.setListaTareas(listaRealizadas);
 
@@ -131,6 +138,50 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
 
         boolean sinTareas = listaTodasTareas.isEmpty();
         llEmptyState.setVisibility(sinTareas ? View.VISIBLE : View.GONE);
+    }
+
+    private int compararTareasPorFechaYHora(Tarea t1, Tarea t2) {
+        String f1 = t1.getFecha() != null ? t1.getFecha().trim() : "";
+        String f2 = t2.getFecha() != null ? t2.getFecha().trim() : "";
+
+        long millis1 = parsearFechaToMillis(f1);
+        long millis2 = parsearFechaToMillis(f2);
+
+        if (millis1 != millis2) {
+            return Long.compare(millis1, millis2);
+        }
+
+        String h1 = t1.getHorario() != null ? t1.getHorario().trim() : "";
+        String h2 = t2.getHorario() != null ? t2.getHorario().trim() : "";
+
+        return compararHoras(h1, h2);
+    }
+
+    private long parsearFechaToMillis(String fechaStr) {
+        if (fechaStr.isEmpty()) return Long.MAX_VALUE;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date date = sdf.parse(fechaStr);
+            return date != null ? date.getTime() : Long.MAX_VALUE;
+        } catch (Exception e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    private int compararHoras(String h1, String h2) {
+        if (h1.isEmpty() && h2.isEmpty()) return 0;
+        if (h1.isEmpty()) return 1;
+        if (h2.isEmpty()) return -1;
+
+        try {
+            String[] p1 = h1.split(":");
+            String[] p2 = h2.split(":");
+            int m1 = Integer.parseInt(p1[0].trim()) * 60 + Integer.parseInt(p1[1].trim());
+            int m2 = Integer.parseInt(p2[0].trim()) * 60 + Integer.parseInt(p2[1].trim());
+            return Integer.compare(m1, m2);
+        } catch (Exception e) {
+            return h1.compareTo(h2);
+        }
     }
 
     @Override

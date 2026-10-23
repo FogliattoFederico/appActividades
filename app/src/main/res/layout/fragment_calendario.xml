@@ -3,85 +3,128 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Selector de semana -->
-        <LinearLayout
+        <!-- Header del Mes (Mes / Año y flechas) -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/card_background"
-            android:paddingVertical="8dp"
-            android:elevation="2dp">
-
-            <TextView
-                android:id="@+id/tvMesAnio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:gravity="center"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                tools:text="Octubre 2026" />
+            android:layout_margin="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/divider">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="2dp">
+                android:orientation="vertical"
+                android:paddingVertical="8dp">
 
-                <TextView
-                    android:id="@+id/btnSemanaAnterior"
-                    android:layout_width="32dp"
-                    android:layout_height="40dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:contentDescription="Semana anterior"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="‹"
-                    android:textColor="@color/purple_500"
-                    android:textSize="22sp" />
-
+                <!-- Fila del Mes y Navegación -->
                 <LinearLayout
-                    android:id="@+id/llDiasSemana"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="8dp">
 
-                <TextView
-                    android:id="@+id/btnSemanaSiguiente"
-                    android:layout_width="32dp"
-                    android:layout_height="40dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:contentDescription="Semana siguiente"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="›"
-                    android:textColor="@color/purple_500"
-                    android:textSize="22sp" />
+                    <TextView
+                        android:id="@+id/btnMesAnterior"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:contentDescription="Mes anterior"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="‹"
+                        android:textColor="@color/purple_500"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvMesAnio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        tools:text="Mayo 2025" />
+
+                    <TextView
+                        android:id="@+id/btnMesSiguiente"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:contentDescription="Mes siguiente"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="›"
+                        android:textColor="@color/purple_500"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Encabezados de Días de la Semana (Lun, Mar, Mié, Jue, Vie, Sáb, Dom) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Lun" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Mar" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Mié" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Jue" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Vie" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Sáb" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Dom" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Grid de Días del Mes (7 columnas) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGridMes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_dia_mes" />
 
             </LinearLayout>
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Lista de actividades del día seleccionado -->
+        <!-- Titulo de Fecha Seleccionada -->
+        <TextView
+            android:id="@+id/tvDiaSeleccionadoHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="Agenda del Lunes 05/05/2025" />
+
+        <!-- Lista Combinada (Actividades + Tareas del día seleccionado) -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvActividades"
+                android:id="@+id/rvAgendaDia"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -89,7 +132,7 @@
                 tools:listitem="@layout/item_actividad" />
 
             <LinearLayout
-                android:id="@+id/llEmptyState"
+                android:id="@+id/llEmptyStateAgenda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -102,15 +145,16 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@drawable/ic_calendar"
-                    app:tint="@color/text_secondary" />
+                    app:tint="@color/text_secondary"
+                    android:contentDescription="Sin actividades" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="No hay actividades para este día"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:text="No hay actividades ni tareas agendadas"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -118,13 +162,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
-                    android:text="Toca el botón + para agregar una actividad."
+                    android:text="Presiona + para agregar una nueva actividad"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
             </LinearLayout>
 
             <ProgressBar
-                android:id="@+id/pbCargando"
+                android:id="@+id/pbCargandoAgenda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
