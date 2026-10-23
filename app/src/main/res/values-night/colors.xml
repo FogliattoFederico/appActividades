@@ -26,6 +26,9 @@
     <color name="cat_fisica">#6DD58C</color>
     <color name="cat_fisica_bg">#0A3818</color>
 
+    <color name="cat_arte">#FFB74D</color>
+    <color name="cat_arte_bg">#3E2723</color>
+
     <!-- High contrast text & hint & divider colors for Night Mode -->
     <color name="text_primary">#FFE6E1E5</color>
     <color name="text_secondary">#FFCAC4D0</color>

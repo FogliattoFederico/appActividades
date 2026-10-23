@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="46dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="2dp">
+
+    <TextView
+        android:id="@+id/tvNumeroDiaMes"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="15"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/viewIndicadorEvento"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_event_dot"
+        android:visibility="invisible" />
+
+</LinearLayout>
