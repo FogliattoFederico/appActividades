@@ -2,7 +2,9 @@ package frgp.utn.edu.actividadesdeiara.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -110,6 +112,47 @@ public class CalendarioFragment extends Fragment implements MonthCalendarAdapter
             mesActual.add(Calendar.MONTH, 1);
             actualizarVistaMes();
         });
+
+        GestureDetector gestureDetector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
+            private static final int SWIPE_THRESHOLD = 80;
+            private static final int SWIPE_VELOCITY_THRESHOLD = 80;
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1 == null || e2 == null) return false;
+                float diffX = e2.getX() - e1.getX();
+                float diffY = e2.getY() - e1.getY();
+
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX < 0) {
+                            // Deslizar a la izquierda -> Próximo mes
+                            mesActual.add(Calendar.MONTH, 1);
+                            actualizarVistaMes();
+                        } else {
+                            // Deslizar a la derecha -> Mes anterior
+                            mesActual.add(Calendar.MONTH, -1);
+                            actualizarVistaMes();
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        rvGridMes.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                gestureDetector.onTouchEvent(e);
+                return false;
+            }
+        });
+
+        View cardMes = view.findViewById(R.id.cardMes);
+        if (cardMes != null) {
+            cardMes.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+        }
 
         mesActual.set(Calendar.DAY_OF_MONTH, 1);
         Calendar hoy = Calendar.getInstance();
