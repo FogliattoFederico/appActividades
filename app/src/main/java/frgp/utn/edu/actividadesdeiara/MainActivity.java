@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.concurrent.Executor;
 
 import frgp.utn.edu.actividadesdeiara.fragment.CalendarioFragment;
+import frgp.utn.edu.actividadesdeiara.fragment.NotasFragment;
 import frgp.utn.edu.actividadesdeiara.fragment.ProfesionalesFragment;
 import frgp.utn.edu.actividadesdeiara.fragment.RubrosFragment;
 import frgp.utn.edu.actividadesdeiara.fragment.TareasFragment;
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 fragmentSeleccionado = new RubrosFragment();
             } else if (id == R.id.nav_tareas) {
                 fragmentSeleccionado = new TareasFragment();
+            } else if (id == R.id.nav_notas) {
+                fragmentSeleccionado = new NotasFragment();
             } else {
                 fragmentSeleccionado = new CalendarioFragment();
             }

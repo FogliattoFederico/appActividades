@@ -7,6 +7,16 @@
         android:title="Calendario" />
 
     <item
+        android:id="@+id/nav_tareas"
+        android:icon="@drawable/ic_task"
+        android:title="Tareas" />
+
+    <item
+        android:id="@+id/nav_notas"
+        android:icon="@drawable/ic_note"
+        android:title="Notas" />
+
+    <item
         android:id="@+id/nav_profesionales"
         android:icon="@drawable/ic_professionals"
         android:title="Profesionales" />
@@ -15,10 +25,5 @@
         android:id="@+id/nav_rubros"
         android:icon="@drawable/ic_rubro"
         android:title="Rubros" />
-
-    <item
-        android:id="@+id/nav_tareas"
-        android:icon="@drawable/ic_task"
-        android:title="Tareas" />
 
 </menu>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootViewNota"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:background="@color/app_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvFormTitleNota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nueva Nota"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Ingresa el título y el contenido de tu anotación"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <!-- Campo 1: Título de la Nota (Obligatorio) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTituloNota"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Título de la Nota *">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTituloNota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo 2: Contenido de la Nota (Obligatorio) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilContenidoNota"
+            style="@style/Widget.ActividadesDeIara.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Contenido / Anotación *">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etContenidoNota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:minLines="6"
+                android:gravity="top"
+                android:inputType="textMultiLine|textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botones de Acción -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarNota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:paddingVertical="14dp"
+            android:text="Guardar Nota"
+            android:textSize="16sp"
+            app:cornerRadius="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminarNota"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:paddingVertical="14dp"
+            android:text="Eliminar Nota"
+            android:textColor="#D32F2F"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:cornerRadius="10dp"
+            app:strokeColor="#D32F2F" />
+
+    </LinearLayout>
+</ScrollView>
