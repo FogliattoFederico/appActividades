@@ -59,6 +59,12 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Add/Edit Nota Screen -->
+        <activity
+            android:name=".AddEditNotaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Notification Receiver -->
         <receiver
             android:name=".receiver.NotificationReceiver"
