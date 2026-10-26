@@ -1,13 +1,17 @@
 package frgp.utn.edu.actividadesdeiara;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -87,6 +91,30 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             bottomNavigation.setSelectedItemId(R.id.nav_calendario);
+        }
+
+        solicitarPermisoOverlaySiEsNecesario();
+    }
+
+    private void solicitarPermisoOverlaySiEsNecesario() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Permiso de Alertas Emergentes")
+                        .setMessage("Para desplegar las tarjetas de recordatorio en pantalla cuando estés usando el teléfono, activa el permiso 'Aparecer encima' o 'Mostrar sobre otras aplicaciones'.")
+                        .setPositiveButton("Configurar", (dialog, which) -> {
+                            try {
+                                Intent intent = new Intent(
+                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                        Uri.parse("package:" + getPackageName())
+                                );
+                                startActivity(intent);
+                            } catch (Exception ignored) {
+                            }
+                        })
+                        .setNegativeButton("Ahora no", null)
+                        .show();
+            }
         }
     }
 
