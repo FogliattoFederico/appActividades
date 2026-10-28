@@ -77,20 +77,20 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Encabezados de Días de la Semana (Lun, Mar, Mié, Jue, Vie, Sáb, Dom) -->
+                <!-- Encabezados de Días de la Semana (Dom, Lun, Mar, Mié, Jue, Vie, Sáb) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:orientation="horizontal">
 
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Dom" android:textColor="#D32F2F" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Lun" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Mar" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Mié" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Jue" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Vie" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Sáb" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Dom" android:textColor="@color/purple_700" android:textSize="12sp" android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Grid de Días del Mes (7 columnas) -->
