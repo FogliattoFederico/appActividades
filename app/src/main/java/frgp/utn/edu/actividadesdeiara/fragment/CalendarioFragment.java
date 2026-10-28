@@ -184,9 +184,21 @@ public class CalendarioFragment extends Fragment implements MonthCalendarAdapter
         int offset = dayOfWeek - Calendar.SUNDAY;
         if (offset < 0) offset += 7;
 
+        int diasEnMes = mes.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int celdasNecesarias = offset + diasEnMes;
+
+        int totalCeldas;
+        if (celdasNecesarias <= 28) {
+            totalCeldas = 28;
+        } else if (celdasNecesarias <= 35) {
+            totalCeldas = 35;
+        } else {
+            totalCeldas = 42;
+        }
+
         cal.add(Calendar.DAY_OF_MONTH, -offset);
 
-        for (int i = 0; i < 42; i++) {
+        for (int i = 0; i < totalCeldas; i++) {
             dias.add((Calendar) cal.clone());
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
