@@ -181,12 +181,12 @@ public class CalendarioFragment extends Fragment implements MonthCalendarAdapter
         cal.set(Calendar.DAY_OF_MONTH, 1);
 
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-        int offset = dayOfWeek - Calendar.MONDAY;
+        int offset = dayOfWeek - Calendar.SUNDAY;
         if (offset < 0) offset += 7;
 
         cal.add(Calendar.DAY_OF_MONTH, -offset);
 
-        for (int i = 0; i < 35; i++) {
+        for (int i = 0; i < 42; i++) {
             dias.add((Calendar) cal.clone());
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }

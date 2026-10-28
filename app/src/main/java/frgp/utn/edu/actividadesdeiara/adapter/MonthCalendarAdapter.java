@@ -1,6 +1,7 @@
 package frgp.utn.edu.actividadesdeiara.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,15 +75,25 @@ public class MonthCalendarAdapter extends RecyclerView.Adapter<MonthCalendarAdap
 
         holder.viewIndicador.setVisibility(tieneEventos ? View.VISIBLE : View.INVISIBLE);
 
+        boolean esDomingo = (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
+
         if (esSeleccionado) {
             holder.tvNumeroDia.setBackgroundResource(R.drawable.bg_day_selected);
             holder.tvNumeroDia.setTextColor(ContextCompat.getColor(context, R.color.white));
         } else {
             holder.tvNumeroDia.setBackgroundResource(android.R.color.transparent);
             if (esMismoMes) {
-                holder.tvNumeroDia.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
+                if (esDomingo) {
+                    holder.tvNumeroDia.setTextColor(Color.parseColor("#D32F2F"));
+                } else {
+                    holder.tvNumeroDia.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
+                }
             } else {
-                holder.tvNumeroDia.setTextColor(ContextCompat.getColor(context, R.color.text_hint));
+                if (esDomingo) {
+                    holder.tvNumeroDia.setTextColor(Color.parseColor("#D32F2F"));
+                } else {
+                    holder.tvNumeroDia.setTextColor(ContextCompat.getColor(context, R.color.text_hint));
+                }
             }
         }
 
