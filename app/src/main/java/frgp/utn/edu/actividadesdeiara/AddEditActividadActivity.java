@@ -2,9 +2,7 @@ package frgp.utn.edu.actividadesdeiara;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,9 +25,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,6 +43,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import frgp.utn.edu.actividadesdeiara.model.Actividad;
@@ -440,22 +442,24 @@ public class AddEditActividadActivity extends AppCompatActivity {
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dialog = new DatePickerDialog(this, (view, y, m, d) -> {
-            String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d", d, m + 1, y);
-            etFecha.setText(fechaSeleccionada);
-        }, year, month, day);
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Seleccionar fecha")
+                .setSelection(cal.getTimeInMillis())
+                .build();
 
-        dialog.setOnShowListener(d -> {
-            int colorBtn = ContextCompat.getColor(this, R.color.purple_500);
-            if (dialog.getButton(DatePickerDialog.BUTTON_POSITIVE) != null) {
-                dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(colorBtn);
-            }
-            if (dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE) != null) {
-                dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(colorBtn);
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            if (selection != null) {
+                Calendar selectedCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                selectedCal.setTimeInMillis(selection);
+                String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+                        selectedCal.get(Calendar.DAY_OF_MONTH),
+                        selectedCal.get(Calendar.MONTH) + 1,
+                        selectedCal.get(Calendar.YEAR));
+                etFecha.setText(fechaSeleccionada);
             }
         });
 
-        dialog.show();
+        datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
     }
 
     private void mostrarTimePicker() {
@@ -475,22 +479,20 @@ public class AddEditActividadActivity extends AppCompatActivity {
             }
         }
 
-        TimePickerDialog dialog = new TimePickerDialog(this, (view, h, m) -> {
-            String horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d", h, m);
-            etHora.setText(horaSeleccionada);
-        }, hour, minute, true);
+        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setHour(hour)
+                .setMinute(minute)
+                .setTitleText("Seleccionar hora")
+                .build();
 
-        dialog.setOnShowListener(d -> {
-            int colorBtn = ContextCompat.getColor(this, R.color.purple_500);
-            if (dialog.getButton(TimePickerDialog.BUTTON_POSITIVE) != null) {
-                dialog.getButton(TimePickerDialog.BUTTON_POSITIVE).setTextColor(colorBtn);
-            }
-            if (dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE) != null) {
-                dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE).setTextColor(colorBtn);
-            }
+        timePicker.addOnPositiveButtonClickListener(v -> {
+            String horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d",
+                    timePicker.getHour(), timePicker.getMinute());
+            etHora.setText(horaSeleccionada);
         });
 
-        dialog.show();
+        timePicker.show(getSupportFragmentManager(), "MATERIAL_TIME_PICKER");
     }
 
     private List<String> generarFechasRepeticion(String fechaInicial, int semanas) {
