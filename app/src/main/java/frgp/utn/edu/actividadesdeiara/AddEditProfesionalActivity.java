@@ -25,8 +25,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import frgp.utn.edu.actividadesdeiara.model.Profesional;
 import frgp.utn.edu.actividadesdeiara.model.Rubro;
@@ -310,13 +312,28 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
         );
 
         if (profesionalEnEdicion != null && profesionalEnEdicion.getId() != null) {
+            String profesionalId = profesionalEnEdicion.getId();
+            String apellidoOld = profesionalEnEdicion.getApellido() != null ? profesionalEnEdicion.getApellido().trim() : "";
+            String nombreOld = profesionalEnEdicion.getNombre() != null ? profesionalEnEdicion.getNombre().trim() : "";
+
             db.collection("users")
                     .document(currentUserId)
                     .collection("profesionales")
-                    .document(profesionalEnEdicion.getId())
+                    .document(profesionalId)
                     .set(profesional)
                     .addOnSuccessListener(unused -> {
-                        Toast.makeText(this, "Profesional actualizado", Toast.LENGTH_SHORT).show();
+                        cascadaActualizarActividadesDeProfesional(
+                                profesionalId,
+                                apellidoOld,
+                                nombreOld,
+                                apellido,
+                                nombre,
+                                rubro,
+                                especialidad,
+                                atencionDomicilio,
+                                direccionAtencion
+                        );
+                        Toast.makeText(this, "Profesional y sus actividades asociadas actualizadas", Toast.LENGTH_SHORT).show();
                         finish();
                     })
                     .addOnFailureListener(e -> {
@@ -337,5 +354,63 @@ public class AddEditProfesionalActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al guardar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+
+    private void cascadaActualizarActividadesDeProfesional(
+            String profesionalId,
+            String apellidoOld,
+            String nombreOld,
+            String apellidoNew,
+            String nombreNew,
+            String nuevoRubro,
+            String nuevaEspecialidad,
+            boolean nuevaAtencionDomicilio,
+            String nuevaDireccionAtencion) {
+
+        if (currentUserId == null) return;
+
+        String old1 = (!apellidoOld.isEmpty() && !nombreOld.isEmpty()) ? (apellidoOld + ", " + nombreOld) : (!apellidoOld.isEmpty() ? apellidoOld : nombreOld);
+        String old2 = (!nombreOld.isEmpty() && !apellidoOld.isEmpty()) ? (nombreOld + " " + apellidoOld) : (!nombreOld.isEmpty() ? nombreOld : apellidoOld);
+        String old3 = apellidoOld;
+        String old4 = nombreOld;
+
+        String nombreNuevo = (!apellidoNew.isEmpty() && !nombreNew.isEmpty()) ? (apellidoNew + ", " + nombreNew) : (!apellidoNew.isEmpty() ? apellidoNew : nombreNew);
+
+        db.collection("users")
+                .document(currentUserId)
+                .collection("actividades")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null) {
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            String pId = doc.getString("profesionalId");
+                            String resp = doc.getString("responsable");
+                            if (resp == null) resp = "";
+                            resp = resp.trim();
+
+                            boolean coincideId = (profesionalId != null && profesionalId.equals(pId));
+                            boolean coincideNombre = (!old1.isEmpty() && resp.equalsIgnoreCase(old1))
+                                    || (!old2.isEmpty() && resp.equalsIgnoreCase(old2))
+                                    || (!old3.isEmpty() && resp.equalsIgnoreCase(old3))
+                                    || (!old4.isEmpty() && resp.equalsIgnoreCase(old4))
+                                    || (!nombreNuevo.isEmpty() && resp.equalsIgnoreCase(nombreNuevo));
+
+                            if (coincideId || coincideNombre) {
+                                Map<String, Object> actualizaciones = new HashMap<>();
+                                if (profesionalId != null) {
+                                    actualizaciones.put("profesionalId", profesionalId);
+                                }
+                                actualizaciones.put("responsable", nombreNuevo);
+                                actualizaciones.put("rubro", nuevoRubro);
+                                actualizaciones.put("categoria", nuevoRubro);
+                                actualizaciones.put("especialidad", nuevaEspecialidad);
+                                actualizaciones.put("atencionDomicilio", nuevaAtencionDomicilio);
+                                actualizaciones.put("direccionAtencion", nuevaDireccionAtencion);
+
+                                doc.getReference().update(actualizaciones);
+                            }
+                        }
+                    }
+                });
     }
 }

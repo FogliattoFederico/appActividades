@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import frgp.utn.edu.actividadesdeiara.AddEditTareaActivity;
+import frgp.utn.edu.actividadesdeiara.PapeleraTareasActivity;
 import frgp.utn.edu.actividadesdeiara.R;
 import frgp.utn.edu.actividadesdeiara.adapter.TareaAdapter;
 import frgp.utn.edu.actividadesdeiara.model.Tarea;
@@ -78,6 +80,11 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
 
         fabAdd.setOnClickListener(v -> startActivity(new Intent(requireContext(), AddEditTareaActivity.class)));
 
+        MaterialButton btnVerPapelera = view.findViewById(R.id.btnVerPapelera);
+        if (btnVerPapelera != null) {
+            btnVerPapelera.setOnClickListener(v -> startActivity(new Intent(requireContext(), PapeleraTareasActivity.class)));
+        }
+
         cargarTareasDesdeFirestore();
     }
 
@@ -116,7 +123,10 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
         List<Tarea> listaPendientes = new ArrayList<>();
         List<Tarea> listaRealizadas = new ArrayList<>();
 
+        boolean hayTareasVisibles = false;
         for (Tarea t : listaTodasTareas) {
+            if (t.isEnPapelera()) continue;
+            hayTareasVisibles = true;
             if (t.isCompletada()) {
                 listaRealizadas.add(t);
             } else {
@@ -136,8 +146,7 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
         tvHeaderRealizadas.setVisibility(listaRealizadas.isEmpty() ? View.GONE : View.VISIBLE);
         rvTareasRealizadas.setVisibility(listaRealizadas.isEmpty() ? View.GONE : View.VISIBLE);
 
-        boolean sinTareas = listaTodasTareas.isEmpty();
-        llEmptyState.setVisibility(sinTareas ? View.VISIBLE : View.GONE);
+        llEmptyState.setVisibility(!hayTareasVisibles ? View.VISIBLE : View.GONE);
     }
 
     private int compararTareasPorFechaYHora(Tarea t1, Tarea t2) {
@@ -196,22 +205,22 @@ public class TareasFragment extends Fragment implements TareaAdapter.OnTareaClic
         if (tarea == null || tarea.getId() == null) return;
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Eliminar Tarea")
-                .setMessage("¿Deseas eliminar la tarea '" + tarea.getNombre() + "'?")
-                .setPositiveButton("Eliminar", (dialog, which) -> {
+                .setTitle("Mover a la Papelera")
+                .setMessage("¿Deseas enviar la tarea '" + tarea.getNombre() + "' a la papelera?")
+                .setPositiveButton("Mover", (dialog, which) -> {
                     db.collection("users")
                             .document(currentUserId)
                             .collection("tareas")
                             .document(tarea.getId())
-                            .delete()
+                            .update("enPapelera", true)
                             .addOnSuccessListener(aVoid -> {
                                 if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Tarea movida a la Papelera 🗑️", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(e -> {
                                 if (isAdded()) {
-                                    Toast.makeText(requireContext(), "Error al eliminar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Error al mover a papelera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 })

@@ -100,6 +100,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String currentUserId;
     private Actividad actividadAEditar;
+    private String profesionalIdSeleccionado = null;
 
     private final List<Profesional> listaProfesionales = new ArrayList<>();
     private ArrayAdapter<String> adapterProfesionales;
@@ -215,6 +216,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
         actvProfesional.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < listaProfesionales.size()) {
                 Profesional p = listaProfesionales.get(position);
+                profesionalIdSeleccionado = p.getId();
                 etRubro.setText(p.getRubro() != null ? p.getRubro() : "");
                 etEspecialidad.setText(p.getEspecialidad() != null ? p.getEspecialidad() : "");
 
@@ -272,6 +274,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
         }
 
         if (actividadAEditar != null) {
+            profesionalIdSeleccionado = actividadAEditar.getProfesionalId();
             tvFormTitle.setText("Editar Actividad");
             etTitulo.setText(actividadAEditar.getTitulo());
             actvProfesional.setText(actividadAEditar.getResponsable() != null ? actividadAEditar.getResponsable() : "", false);
@@ -767,6 +770,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
             actividad.setAtencionDomicilio(atencionDomicilio);
             actividad.setDireccionAtencion(direccionAtencion);
             actividad.setAbonada(abonada);
+            actividad.setProfesionalId(profesionalIdSeleccionado);
 
             db.collection("users")
                     .document(currentUserId)
@@ -823,6 +827,7 @@ public class AddEditActividadActivity extends AppCompatActivity {
                 actividad.setAtencionDomicilio(atencionDomicilio);
                 actividad.setDireccionAtencion(direccionAtencion);
                 actividad.setAbonada(abonada);
+                actividad.setProfesionalId(profesionalIdSeleccionado);
 
                 db.collection("users")
                         .document(currentUserId)

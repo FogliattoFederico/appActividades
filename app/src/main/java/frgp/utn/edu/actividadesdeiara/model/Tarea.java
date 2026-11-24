@@ -17,6 +17,7 @@ public class Tarea implements Serializable {
     private int minutosAnticipacion2 = 0; // Para recordatorio 2
     private long recordatorioTimeMillis;
     private long recordatorioTimeMillis2;
+    private boolean enPapelera;
     private String userId;
 
     public Tarea() {
@@ -153,5 +154,13 @@ public class Tarea implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean isEnPapelera() {
+        return enPapelera;
+    }
+
+    public void setEnPapelera(boolean enPapelera) {
+        this.enPapelera = enPapelera;
     }
 }

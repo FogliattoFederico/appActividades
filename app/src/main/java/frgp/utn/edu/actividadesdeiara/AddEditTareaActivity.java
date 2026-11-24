@@ -350,20 +350,20 @@ public class AddEditTareaActivity extends AppCompatActivity {
         if (tareaAEditar == null || tareaAEditar.getId() == null) return;
 
         new AlertDialog.Builder(this)
-                .setTitle("Eliminar Tarea")
-                .setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
-                .setPositiveButton("Eliminar", (dialog, which) -> {
+                .setTitle("Mover a la Papelera")
+                .setMessage("¿Deseas enviar la tarea '" + tareaAEditar.getNombre() + "' a la papelera?")
+                .setPositiveButton("Mover", (dialog, which) -> {
                     cancelarAlarmaNotificacion(tareaAEditar.getId());
                     db.collection("users")
                             .document(currentUserId)
                             .collection("tareas")
                             .document(tareaAEditar.getId())
-                            .delete()
+                            .update("enPapelera", true)
                             .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Tarea eliminada", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Tarea movida a la Papelera 🗑️", Toast.LENGTH_SHORT).show();
                                 finish();
                             })
-                            .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            .addOnFailureListener(e -> Toast.makeText(this, "Error al mover a papelera: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();

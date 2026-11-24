@@ -24,6 +24,7 @@ public class Actividad implements Serializable {
     private boolean atencionDomicilio;
     private String direccionAtencion;
     private boolean abonada; // Confirmación de pago / abonado
+    private String profesionalId;
     private String repeatGroupId;
     private String frecuenciaRepeticion; // "Único", "Semanal"
     private String userId;
@@ -234,5 +235,13 @@ public class Actividad implements Serializable {
 
     public void setAbonada(boolean abonada) {
         this.abonada = abonada;
+    }
+
+    public String getProfesionalId() {
+        return profesionalId;
+    }
+
+    public void setProfesionalId(String profesionalId) {
+        this.profesionalId = profesionalId;
     }
 }

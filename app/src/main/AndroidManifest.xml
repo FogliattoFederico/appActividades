@@ -69,6 +69,12 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Papelera de Tareas Screen -->
+        <activity
+            android:name=".PapeleraTareasActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Full-Screen Reminder / Alarm Activity -->
         <activity
             android:name=".ReminderActivity"
